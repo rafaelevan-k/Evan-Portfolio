@@ -1,33 +1,34 @@
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
+import AnimateOnScroll from "@/components/AnimateOnScroll";
 
 const projects = [
   {
     title: "Sistem Informasi Inventory",
     role: "Full-Stack Developer",
     description: "Membangun sistem informasi pencatatan inventory multi-user untuk manajemen data dan monitoring barang suatu universitas yang memiliki fitur CRUD, pencarian, filter data, serta form pengaduan barang rusak.",
-    image: "/project_inventory.png",
+    image: "/project_inventory.webp",
     tags: ["Next.js", "TypeScript", "MySQL"],
   },
   {
     title: "CyberShark LMS",
     role: "Frontend Developer",
     description: "Menjadi seorang Frontend Developer dalam project CyberShark LMS, sebuah platform LMS untuk bimbel yang memiliki fitur video dan text learning, quiz assessment, dan tracking nilai siswa.",
-    image: "/project_cybershark.png",
+    image: "/project_cybershark.webp",
     tags: ["Laravel", "CSS", "MySQL"],
   },
   {
     title: "Sinau Matika",
     role: "Frontend Developer",
     description: "Menjadi seorang Frontend Developer dalam project Sinau Matika, sebuah platform LMS dengan gamifikasi yang interaktif dan menarik untuk mata pelajaran Matematika siswa SD Kanisius Sorowajan.",
-    image: "/project_sinaumatika.png",
+    image: "/project_sinaumatika.webp",
     tags: ["Vue.js", "Slim", "MySQL"],
   },
   {
     title: "Portofolio",
     role: "Frontend Developer",
     description: "Menjadi seorang Frontend Developer dalam project Portofolio, sebuah platform untuk menampilkan portofolio saya.",
-    image: "/project_porto.png",
+    image: "/project_porto.webp",
     tags: ["Next.js", "TypeScript", "Tailwind CSS"],
   },
 ];
@@ -74,7 +75,7 @@ export default function Home() {
                 <div className="absolute -inset-4 bg-gradient-to-br from-accent/30 via-accent-light/20 to-transparent rounded-full blur-2xl animate-pulse-glow" />
                 {/* Image container */}
                 <div className="relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-full overflow-hidden border-2 border-accent/20 glow">
-                  <Image src="/foto-profil.jpeg" alt="Rafael Evan Kristanto" fill className="object-cover" priority />
+                  <Image src="/foto-profil.webp" alt="Rafael Evan Kristanto" fill className="object-cover" priority />
                 </div>
                 {/* Status badge */}
                 <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-2 px-4 py-1.5 rounded-full glass-card text-xs font-medium text-accent-light whitespace-nowrap">
@@ -144,18 +145,18 @@ export default function Home() {
 
         <div className="relative max-w-6xl mx-auto px-6">
           {/* Section Header */}
-          <div className="text-center mb-16">
+          <AnimateOnScroll className="text-center mb-16">
             <p className="text-accent-light text-sm font-semibold tracking-widest uppercase mb-4">Portfolio</p>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
               Featured <span className="gradient-text">Projects</span>
             </h2>
             <p className="text-muted text-lg max-w-2xl mx-auto">Beberapa projek terbaik yang telah saya kerjakan, mencakup berbagai teknologi dan solusi digital.</p>
-          </div>
+          </AnimateOnScroll>
 
           {/* Projects Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {projects.map((project, index) => (
-              <div key={project.title} className={`glass-card rounded-2xl flex flex-col overflow-hidden group animate-fade-in-up stagger-${index + 1}`}>
+              <AnimateOnScroll key={project.title} delay={index * 100} className="glass-card rounded-2xl flex flex-col overflow-hidden group hover:bg-[rgba(255,255,255,0.06)] hover:border-[rgba(124,92,252,0.3)] hover:-translate-y-1 hover:shadow-[0_20px_60px_rgba(124,92,252,0.1)]">
                 {/* Project Image */}
                 <div className="relative aspect-video overflow-hidden">
                   <Image src={project.image} alt={project.title} fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
@@ -180,7 +181,7 @@ export default function Home() {
                     ))}
                   </div>
                 </div>
-              </div>
+              </AnimateOnScroll>
             ))}
           </div>
         </div>
@@ -195,22 +196,22 @@ export default function Home() {
         <div className="absolute top-0 right-1/4 w-80 h-80 bg-accent/5 rounded-full blur-[100px]" />
 
         <div className="relative max-w-6xl mx-auto px-6">
-          <div className="text-center mb-16">
+          <AnimateOnScroll className="text-center mb-16">
             <p className="text-accent-light text-sm font-semibold tracking-widest uppercase mb-4">Achievements</p>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
               My <span className="gradient-text">Certifications</span>
             </h2>
             <p className="text-muted text-lg max-w-2xl mx-auto">Beberapa sertifikasi yang telah saya peroleh untuk memvalidasi keahlian di bidang Frontend Web Development.</p>
-          </div>
+          </AnimateOnScroll>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {certifications.map((cert, index) => (
+              <AnimateOnScroll key={cert.title} delay={index * 100}>
               <a
                 href={cert.pdf}
                 target="_blank"
                 rel="noopener noreferrer"
-                key={cert.title}
-                className={`glass-card rounded-2xl p-6 flex flex-col items-center text-center group animate-fade-in-up stagger-${index + 1} hover:border-accent/40`}
+                className="glass-card rounded-2xl p-6 flex flex-col items-center text-center group hover:border-accent/40 h-full hover:bg-[rgba(255,255,255,0.06)] hover:-translate-y-1 hover:shadow-[0_20px_60px_rgba(124,92,252,0.1)]"
               >
                 <div className="w-16 h-16 rounded-full bg-accent/10 flex items-center justify-center mb-6 text-accent-light group-hover:scale-110 transition-transform duration-300">
                   <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -226,6 +227,7 @@ export default function Home() {
                 <p className="text-foreground font-medium text-sm mb-1">{cert.issuer}</p>
                 <p className="text-muted text-xs">{cert.date}</p>
               </a>
+              </AnimateOnScroll>
             ))}
           </div>
         </div>
@@ -242,17 +244,17 @@ export default function Home() {
 
         <div className="relative max-w-6xl mx-auto px-6">
           {/* Section Header */}
-          <div className="text-center mb-16">
+          <AnimateOnScroll className="text-center mb-16">
             <p className="text-accent-light text-sm font-semibold tracking-widest uppercase mb-4">Get In Touch</p>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
               Let&apos;s <span className="gradient-text">Connect</span>
             </h2>
             <p className="text-muted text-lg max-w-2xl mx-auto">Tertarik untuk berkolaborasi atau memiliki pertanyaan? Jangan ragu untuk menghubungi saya.</p>
-          </div>
+          </AnimateOnScroll>
 
           {/* Contact Card */}
-          <div className="max-w-xl mx-auto">
-            <div className="glass-card rounded-3xl p-10 text-center relative overflow-hidden">
+          <AnimateOnScroll className="max-w-xl mx-auto" delay={100}>
+            <div className="glass-card rounded-3xl p-6 sm:p-10 text-center relative overflow-hidden">
               {/* Decorative gradient */}
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-accent to-transparent" />
 
@@ -268,9 +270,9 @@ export default function Home() {
 
               <a
                 href="mailto:rafaelevankristanto@gmail.com"
-                className="btn-shine inline-flex items-center justify-center gap-3 px-10 py-4 bg-accent hover:bg-accent/90 text-white font-semibold rounded-full transition-all duration-300 hover:shadow-lg hover:shadow-accent/25 text-base"
+                className="btn-shine inline-flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-10 py-3 sm:py-4 bg-accent hover:bg-accent/90 text-white font-semibold rounded-full transition-all duration-300 hover:shadow-lg hover:shadow-accent/25 text-sm sm:text-base break-all"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
                 rafaelevan2005@gmail.com
@@ -280,7 +282,7 @@ export default function Home() {
               <div className="absolute -top-10 -right-10 w-32 h-32 border border-accent/5 rounded-full" />
               <div className="absolute -bottom-16 -left-16 w-48 h-48 border border-accent/5 rounded-full" />
             </div>
-          </div>
+          </AnimateOnScroll>
         </div>
       </section>
 
