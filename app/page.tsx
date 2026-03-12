@@ -156,7 +156,11 @@ export default function Home() {
           {/* Projects Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {projects.map((project, index) => (
-              <AnimateOnScroll key={project.title} delay={index * 100} className="glass-card rounded-2xl flex flex-col overflow-hidden group hover:bg-[rgba(255,255,255,0.06)] hover:border-[rgba(124,92,252,0.3)] hover:-translate-y-1 hover:shadow-[0_20px_60px_rgba(124,92,252,0.1)]">
+              <AnimateOnScroll
+                key={project.title}
+                delay={index * 100}
+                className="glass-card rounded-2xl flex flex-col overflow-hidden group hover:bg-[rgba(255,255,255,0.06)] hover:border-[rgba(124,92,252,0.3)] hover:-translate-y-1 hover:shadow-[0_20px_60px_rgba(124,92,252,0.1)]"
+              >
                 {/* Project Image */}
                 <div className="relative aspect-video overflow-hidden">
                   <Image src={project.image} alt={project.title} fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
@@ -207,26 +211,26 @@ export default function Home() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {certifications.map((cert, index) => (
               <AnimateOnScroll key={cert.title} delay={index * 100}>
-              <a
-                href={cert.pdf}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="glass-card rounded-2xl p-6 flex flex-col items-center text-center group hover:border-accent/40 h-full hover:bg-[rgba(255,255,255,0.06)] hover:-translate-y-1 hover:shadow-[0_20px_60px_rgba(124,92,252,0.1)]"
-              >
-                <div className="w-16 h-16 rounded-full bg-accent/10 flex items-center justify-center mb-6 text-accent-light group-hover:scale-110 transition-transform duration-300">
-                  <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.5}
-                      d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
-                    />
-                  </svg>
-                </div>
-                <h3 className="text-lg font-bold mb-2 group-hover:text-accent-light transition-colors">{cert.title}</h3>
-                <p className="text-foreground font-medium text-sm mb-1">{cert.issuer}</p>
-                <p className="text-muted text-xs">{cert.date}</p>
-              </a>
+                <a
+                  href={cert.pdf}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="glass-card rounded-2xl p-6 flex flex-col items-center text-center group hover:border-accent/40 h-full hover:bg-[rgba(255,255,255,0.06)] hover:-translate-y-1 hover:shadow-[0_20px_60px_rgba(124,92,252,0.1)]"
+                >
+                  <div className="w-16 h-16 rounded-full bg-accent/10 flex items-center justify-center mb-6 text-accent-light group-hover:scale-110 transition-transform duration-300">
+                    <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-bold mb-2 group-hover:text-accent-light transition-colors">{cert.title}</h3>
+                  <p className="text-foreground font-medium text-sm mb-1">{cert.issuer}</p>
+                  <p className="text-muted text-xs">{cert.date}</p>
+                </a>
               </AnimateOnScroll>
             ))}
           </div>
