@@ -273,7 +273,7 @@ export default function Home() {
               <p className="text-muted mb-8 max-w-sm mx-auto">Kirimkan email kepada saya dan saya akan segera merespons pesan Anda.</p>
 
               <a
-                href="mailto:rafaelevankristanto@gmail.com"
+                href="mailto:rafaelevan2005@gmail.com"
                 className="btn-shine inline-flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-10 py-3 sm:py-4 bg-accent hover:bg-accent/90 text-white font-semibold rounded-full transition-all duration-300 hover:shadow-lg hover:shadow-accent/25 text-sm sm:text-base break-all"
               >
                 <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
