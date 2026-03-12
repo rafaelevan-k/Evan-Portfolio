@@ -1,0 +1,110 @@
+"use client";
+
+import { useState, useEffect } from "react";
+
+const navLinks = [
+  { label: "About", href: "#about" },
+  { label: "Featured Projects", href: "#projects" },
+  { label: "Certifications", href: "#certifications" },
+  { label: "Contact", href: "#contact" },
+];
+
+export default function Navbar() {
+  const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState("");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+
+      // Determine active section
+      const sections = navLinks.map((link) => link.href.replace("#", ""));
+      for (const section of sections.reverse()) {
+        const el = document.getElementById(section);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= 150) {
+            setActiveSection(section);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    const targetId = href.replace("#", "");
+    const el = document.getElementById(targetId);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    }
+    setMobileMenuOpen(false);
+  };
+
+  return (
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? "navbar-glass py-3" : "py-5 backdrop-blur-none bg-background/0"}`}>
+      <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
+        {/* Logo */}
+        <a
+          href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
+          className="text-xl font-bold tracking-tight gradient-text hover:opacity-80 transition-opacity"
+        >
+          Rafael Evan Kristanto<span className="text-foreground">'s Portfolio</span>
+        </a>
+
+        {/* Desktop Nav Links */}
+        <div className="hidden md:flex items-center gap-1">
+          {navLinks.map((link) => {
+            const isActive = activeSection === link.href.replace("#", "");
+            return (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={(e) => handleClick(e, link.href)}
+                className={`relative px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${isActive ? "text-white bg-accent/15" : "text-muted hover:text-foreground hover:bg-surface-hover"}`}
+              >
+                {isActive && <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-accent" />}
+                {link.label}
+              </a>
+            );
+          })}
+        </div>
+
+        {/* Mobile Menu Button */}
+        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden flex flex-col gap-1.5 p-2" aria-label="Toggle menu">
+          <span className={`block w-5 h-0.5 bg-foreground transition-all duration-300 ${mobileMenuOpen ? "rotate-45 translate-y-2" : ""}`} />
+          <span className={`block w-5 h-0.5 bg-foreground transition-all duration-300 ${mobileMenuOpen ? "opacity-0" : ""}`} />
+          <span className={`block w-5 h-0.5 bg-foreground transition-all duration-300 ${mobileMenuOpen ? "-rotate-45 -translate-y-2" : ""}`} />
+        </button>
+      </div>
+
+      {/* Mobile Menu */}
+      <div className={`md:hidden transition-all duration-300 overflow-hidden ${mobileMenuOpen ? "max-h-60 opacity-100" : "max-h-0 opacity-0"}`}>
+        <div className="px-6 py-4 flex flex-col gap-2 navbar-glass mt-2 mx-4 rounded-2xl">
+          {navLinks.map((link) => {
+            const isActive = activeSection === link.href.replace("#", "");
+            return (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={(e) => handleClick(e, link.href)}
+                className={`px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 ${isActive ? "text-white bg-accent/15" : "text-muted hover:text-foreground hover:bg-surface-hover"}`}
+              >
+                {link.label}
+              </a>
+            );
+          })}
+        </div>
+      </div>
+    </nav>
+  );
+}
