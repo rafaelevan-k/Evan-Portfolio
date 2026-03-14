@@ -31,6 +31,13 @@ const projects = [
     image: "/project_porto.webp",
     tags: ["Next.js", "TypeScript", "Tailwind CSS"],
   },
+  {
+    title: "E-Catalog Maha Laptop",
+    role: "Full-Stack Developer",
+    description: "Menjadi seorang Fullstack Developer dalam project E-Catalog Maha Laptop, sebuah platform untuk menampilkan katalog produk laptop, lengkap dengan fitur CRUD dan fitur pencarian untuk Admin dan Customer.",
+    image: "/project_mahalaptop.webp",
+    tags: ["Laravel", "Tailwind CSS", "MySQL"],
+  },
 ];
 
 const certifications = [
@@ -120,7 +127,7 @@ export default function Home() {
               {/* Stats */}
               <div className="flex gap-10 mt-12 justify-center lg:justify-start">
                 {[
-                  { value: "4", label: "Projects" },
+                  { value: "5", label: "Projects" },
                   { value: "3.64", label: "GPA" },
                   { value: "100%", label: "Dedication" },
                 ].map((stat) => (
