@@ -18,9 +18,8 @@ export default function Navbar() {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
 
-      // Determine active section
       const sections = navLinks.map((link) => link.href.replace("#", ""));
-      for (const section of sections.reverse()) {
+      for (const section of [...sections].reverse()) {
         const el = document.getElementById(section);
         if (el) {
           const rect = el.getBoundingClientRect();
@@ -40,15 +39,19 @@ export default function Navbar() {
     e.preventDefault();
     const targetId = href.replace("#", "");
     const el = document.getElementById(targetId);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth" });
-    }
+    if (el) el.scrollIntoView({ behavior: "smooth" });
     setMobileMenuOpen(false);
   };
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? "navbar-glass py-3" : "py-5 backdrop-blur-none bg-background/0"}`}>
-      <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
+    <nav
+      className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-md transition-all duration-300 ${
+        scrolled
+          ? "bg-white/90 border-b border-black/10 shadow-sm"
+          : "bg-white/70 border-b border-transparent"
+      }`}
+    >
+      <div className="max-w-5xl mx-auto px-6 flex items-center justify-between h-14">
         {/* Logo */}
         <a
           href="#"
@@ -56,9 +59,9 @@ export default function Navbar() {
             e.preventDefault();
             window.scrollTo({ top: 0, behavior: "smooth" });
           }}
-          className="text-xl font-bold tracking-tight gradient-text hover:opacity-80 transition-opacity"
+          className="text-sm font-semibold font-display text-ink tracking-tight hover:opacity-60 transition-opacity"
         >
-          Rafael Evan Kristanto<span className="text-foreground">'s Portfolio</span>
+          Rafael Evan<span className="text-body-text">&apos;s Portfolio</span>
         </a>
 
         {/* Desktop Nav Links */}
@@ -70,26 +73,50 @@ export default function Navbar() {
                 key={link.href}
                 href={link.href}
                 onClick={(e) => handleClick(e, link.href)}
-                className={`relative px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${isActive ? "text-white bg-accent/15" : "text-muted hover:text-foreground hover:bg-surface-hover"}`}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                  isActive
+                    ? "bg-surface-soft text-ink"
+                    : "text-body-text hover:text-ink hover:bg-surface-soft"
+                }`}
               >
-                {isActive && <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-accent" />}
                 {link.label}
               </a>
             );
           })}
         </div>
 
-        {/* Mobile Menu Button */}
-        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden flex flex-col gap-1.5 p-2" aria-label="Toggle menu">
-          <span className={`block w-5 h-0.5 bg-foreground transition-all duration-300 ${mobileMenuOpen ? "rotate-45 translate-y-2" : ""}`} />
-          <span className={`block w-5 h-0.5 bg-foreground transition-all duration-300 ${mobileMenuOpen ? "opacity-0" : ""}`} />
-          <span className={`block w-5 h-0.5 bg-foreground transition-all duration-300 ${mobileMenuOpen ? "-rotate-45 -translate-y-2" : ""}`} />
+        {/* Mobile Hamburger */}
+        <button
+          id="mobile-menu-toggle"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="md:hidden flex flex-col gap-1.5 p-2"
+          aria-label="Toggle menu"
+        >
+          <span
+            className={`block w-5 h-0.5 bg-ink transition-all duration-300 ${
+              mobileMenuOpen ? "rotate-45 translate-y-2" : ""
+            }`}
+          />
+          <span
+            className={`block w-5 h-0.5 bg-ink transition-all duration-300 ${
+              mobileMenuOpen ? "opacity-0" : ""
+            }`}
+          />
+          <span
+            className={`block w-5 h-0.5 bg-ink transition-all duration-300 ${
+              mobileMenuOpen ? "-rotate-45 -translate-y-2" : ""
+            }`}
+          />
         </button>
       </div>
 
-      {/* Mobile Menu */}
-      <div className={`md:hidden transition-all duration-300 overflow-hidden ${mobileMenuOpen ? "max-h-60 opacity-100" : "max-h-0 opacity-0"}`}>
-        <div className="px-6 py-4 flex flex-col gap-2 navbar-glass mt-2 mx-4 rounded-2xl">
+      {/* Mobile Menu Drawer */}
+      <div
+        className={`md:hidden transition-all duration-300 overflow-hidden ${
+          mobileMenuOpen ? "max-h-64 opacity-100" : "max-h-0 opacity-0"
+        }`}
+      >
+        <div className="px-4 py-3 border-t border-black/10 bg-white/95 backdrop-blur-md flex flex-col gap-1">
           {navLinks.map((link) => {
             const isActive = activeSection === link.href.replace("#", "");
             return (
@@ -97,7 +124,11 @@ export default function Navbar() {
                 key={link.href}
                 href={link.href}
                 onClick={(e) => handleClick(e, link.href)}
-                className={`px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 ${isActive ? "text-white bg-accent/15" : "text-muted hover:text-foreground hover:bg-surface-hover"}`}
+                className={`px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-200 ${
+                  isActive
+                    ? "bg-surface-soft text-ink"
+                    : "text-body-text hover:text-ink hover:bg-surface-soft"
+                }`}
               >
                 {link.label}
               </a>

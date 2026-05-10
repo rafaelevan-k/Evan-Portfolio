@@ -28,7 +28,7 @@ const projects = [
     title: "Portofolio",
     role: "Frontend Developer",
     description: "Menjadi seorang Frontend Developer dalam project Portofolio, sebuah platform untuk menampilkan portofolio saya.",
-    image: "/project_porto.webp",
+    image: "/project_portofolio.webp",
     tags: ["Next.js", "TypeScript", "Tailwind CSS"],
   },
   {
@@ -37,6 +37,14 @@ const projects = [
     description: "Menjadi seorang Fullstack Developer dalam project E-Catalog Maha Laptop, sebuah platform untuk menampilkan katalog produk laptop, lengkap dengan fitur CRUD dan fitur pencarian untuk Admin dan Customer.",
     image: "/project_mahalaptop.webp",
     tags: ["Laravel", "Tailwind CSS", "MySQL"],
+  },
+  {
+    title: "Yuna Personal Assistant",
+    role: "Full-Stack Developer",
+    description:
+      "Menjadi seorang Fullstack Developer dalam membangun Yuna Personal Assistant, sebuah AI chatbot sekaligus AI Agent untuk coding framework Laravel. Menggunakan model LLM local Deepseek Coder dan Llama3 dan integrasi teknologi Web Search API dari Google",
+    image: "/project_yuna.webp",
+    tags: ["Vue.js", "Python", "Tailwind CSS"],
   },
 ];
 
@@ -61,52 +69,55 @@ const certifications = [
   },
 ];
 
+const WA_NUMBER = "6282279551837";
+const WA_MESSAGE = encodeURIComponent("Halo, kami tertarik dengan portfolio yang Anda miliki dan berencana untuk menghubungi Anda lebih lanjut...");
+const WA_LINK = `https://wa.me/${WA_NUMBER}?text=${WA_MESSAGE}`;
+
+// Shared glass card class
+const glassCard = "bg-white/80 backdrop-blur-sm border border-black/10 rounded-xl";
+const glassCardHover = `${glassCard} hover:bg-white/92 hover:border-black/18 transition-all duration-200`;
+
 export default function Home() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen text-ink">
       <Navbar />
 
-      {/* ==================== HERO / ABOUT SECTION ==================== */}
-      <section id="about" className="relative min-h-screen flex items-center pt-20 overflow-hidden">
-        {/* Background decorations */}
-        <div className="absolute inset-0 dot-pattern opacity-50" />
-        <div className="absolute top-1/4 -left-32 w-96 h-96 bg-accent/10 rounded-full blur-[120px]" />
-        <div className="absolute bottom-1/4 -right-32 w-80 h-80 bg-accent-light/8 rounded-full blur-[100px]" />
-
-        <div className="relative max-w-6xl mx-auto px-6 py-20 w-full">
-          <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-20">
+      {/* ==================== HERO / ABOUT ==================== */}
+      <section id="about" className="min-h-screen flex items-center pt-14">
+        <div className="max-w-5xl mx-auto px-6 py-12 w-full">
+          <div className="flex flex-col lg:flex-row items-center lg:items-start justify-center gap-12 lg:gap-20">
             {/* Profile Image */}
-            <div className="animate-fade-in-up flex-shrink-0">
+            <div className="animate-fade-in-up flex-shrink-0 lg:mt-8">
               <div className="relative">
-                {/* Glow ring */}
-                <div className="absolute -inset-4 bg-gradient-to-br from-accent/30 via-accent-light/20 to-transparent rounded-full blur-2xl animate-pulse-glow" />
-                {/* Image container */}
-                <div className="relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-full overflow-hidden border-2 border-accent/20 glow">
+                {/* Ring border around photo */}
+                <div className="relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-full overflow-hidden border-4 border-white/60 shadow-xl ring-1 ring-black/10">
                   <Image src="/foto-profil.webp" alt="Rafael Evan Kristanto" fill className="object-cover" priority />
                 </div>
                 {/* Status badge */}
-                <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-2 px-4 py-1.5 rounded-full glass-card text-xs font-medium text-accent-light whitespace-nowrap">
-                  <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 px-5 py-2 rounded-full bg-white/90 backdrop-blur-sm border border-black/10 text-sm font-medium text-charcoal whitespace-nowrap shadow-md">
+                  <span className="w-2.5 h-2.5 rounded-full bg-green-500" />
                   Available for hire
                 </div>
               </div>
             </div>
 
             {/* Text Content */}
-            <div className="animate-fade-in-up stagger-2 text-center lg:text-left flex-1">
-              <p className="text-accent-light text-sm font-semibold tracking-widest uppercase mb-4">Welcome to my portfolio</p>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-                Hi, I&apos;m <span className="gradient-text">Rafael Evan Kristanto</span>
+            <div className="animate-fade-in-up stagger-2 flex flex-col items-center lg:items-start text-center lg:text-left flex-1 max-w-2xl">
+              <p className="text-body-text text-sm font-semibold tracking-widest uppercase mb-4">Welcome to my portfolio</p>
+              <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 text-ink">
+                Hi, I&apos;m <span className="text-ink">Rafael Evan Kristanto</span>
               </h1>
-              <p className="text-muted text-lg md:text-xl leading-relaxed max-w-xl mb-8">
-                Seorang <span className="text-foreground font-medium">Mahasiswa Sistem Informasi</span> yang tertarik dalam membangun Frontend Web yang modern, fungsional, dan user-friendly.
+              <p className="text-body-text text-base md:text-lg leading-relaxed mb-8">
+                An <span className="text-ink font-medium">Information System student</span> with a strong passion for crafting modern, functional, and user-friendly web interfaces. I specialize in building engaging frontend experiences that
+                not only look great but also deliver seamless usability. With a keen eye for design and a problem-solving mindset, I aim to create digital products that provide real value to users.
               </p>
 
               {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start w-full sm:w-auto">
                 <a
                   href="#projects"
-                  className="btn-shine inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-accent hover:bg-accent/90 text-white font-semibold rounded-full transition-all duration-300 hover:shadow-lg hover:shadow-accent/25"
+                  id="cta-projects"
+                  className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-ink text-white text-sm font-semibold rounded-full transition-colors duration-200 hover:bg-ink-deep w-full sm:w-auto"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -115,7 +126,8 @@ export default function Home() {
                 </a>
                 <a
                   href="#contact"
-                  className="inline-flex items-center justify-center gap-2 px-8 py-3.5 border border-border rounded-full text-foreground font-semibold hover:bg-surface-hover hover:border-accent/30 transition-all duration-300"
+                  id="cta-contact"
+                  className="inline-flex items-center justify-center gap-2 px-8 py-3 border border-black/18 text-ink text-sm font-semibold rounded-full bg-white/70 backdrop-blur-sm transition-all duration-200 hover:bg-white/90 w-full sm:w-auto"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -125,15 +137,15 @@ export default function Home() {
               </div>
 
               {/* Stats */}
-              <div className="flex gap-10 mt-12 justify-center lg:justify-start">
+              <div className="flex gap-10 sm:gap-14 mt-12 justify-center lg:justify-start">
                 {[
-                  { value: "5", label: "Projects" },
+                  { value: "6", label: "Projects" },
                   { value: "3.64", label: "GPA" },
                   { value: "100%", label: "Dedication" },
                 ].map((stat) => (
                   <div key={stat.label} className="text-center">
-                    <p className="text-2xl md:text-3xl font-bold gradient-text">{stat.value}</p>
-                    <p className="text-muted text-xs mt-1 uppercase tracking-wider">{stat.label}</p>
+                    <p className="font-display text-3xl md:text-4xl font-bold text-ink">{stat.value}</p>
+                    <p className="text-body-text text-xs md:text-sm mt-1 uppercase tracking-wider font-medium">{stat.label}</p>
                   </div>
                 ))}
               </div>
@@ -142,51 +154,38 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Section Divider */}
-      <div className="section-divider max-w-6xl mx-auto" />
+      {/* Divider */}
+      <hr className="border-t border-black/10 max-w-5xl mx-auto" />
 
-      {/* ==================== FEATURED PROJECTS SECTION ==================== */}
-      <section id="projects" className="relative py-28 overflow-hidden">
-        {/* Background decorations */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent/5 rounded-full blur-[150px]" />
-
-        <div className="relative max-w-6xl mx-auto px-6">
-          {/* Section Header */}
+      {/* ==================== FEATURED PROJECTS ==================== */}
+      <section id="projects" className="py-[88px]">
+        <div className="max-w-5xl mx-auto px-6">
           <AnimateOnScroll className="text-center mb-16">
-            <p className="text-accent-light text-sm font-semibold tracking-widest uppercase mb-4">Portfolio</p>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-              Featured <span className="gradient-text">Projects</span>
-            </h2>
-            <p className="text-muted text-lg max-w-2xl mx-auto">Beberapa projek terbaik yang telah saya kerjakan, mencakup berbagai teknologi dan solusi digital.</p>
+            <p className="text-body-text text-xs font-medium tracking-widest uppercase mb-4">Portfolio</p>
+            <h2 className="font-display text-3xl md:text-4xl font-semibold text-ink mb-4">Featured Projects</h2>
+            <p className="text-body-text text-base max-w-2xl mx-auto">Beberapa projek terbaik yang telah saya kerjakan, mencakup berbagai teknologi dan solusi digital.</p>
           </AnimateOnScroll>
 
-          {/* Projects Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
             {projects.map((project, index) => (
-              <AnimateOnScroll
-                key={project.title}
-                delay={index * 100}
-                className="glass-card rounded-2xl flex flex-col overflow-hidden group hover:bg-[rgba(255,255,255,0.06)] hover:border-[rgba(124,92,252,0.3)] hover:-translate-y-1 hover:shadow-[0_20px_60px_rgba(124,92,252,0.1)]"
-              >
+              <AnimateOnScroll key={project.title} delay={index * 80} className={`${glassCardHover} flex flex-col overflow-hidden`}>
                 {/* Project Image */}
-                <div className="relative aspect-video overflow-hidden">
-                  <Image src={project.image} alt={project.title} fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
-                  <div className="absolute inset-0 image-overlay opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  {/* Role badge overlay */}
+                <div className="relative aspect-video overflow-hidden rounded-t-xl bg-black/5">
+                  <Image src={project.image} alt={project.title} fill className="object-cover" />
+                  {/* Role badge */}
                   <div className="absolute top-3 left-3">
-                    <span className="px-3 py-1 rounded-full text-xs font-semibold bg-accent/90 text-white backdrop-blur-sm">{project.role}</span>
+                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-ink/90 backdrop-blur-sm text-white">{project.role}</span>
                   </div>
                 </div>
 
                 {/* Card Content */}
-                <div className="p-6 flex flex-col flex-grow">
-                  <h3 className="text-xl font-bold mb-2 group-hover:text-accent-light transition-colors duration-300">{project.title}</h3>
-                  <p className="text-muted text-sm leading-relaxed mb-4">{project.description}</p>
-
+                <div className="p-5 flex flex-col flex-grow">
+                  <h3 className="font-display text-base font-semibold text-ink mb-2">{project.title}</h3>
+                  <p className="text-body-text text-sm leading-relaxed mb-4">{project.description}</p>
                   {/* Tags */}
                   <div className="flex flex-wrap gap-2 mt-auto">
                     {project.tags.map((tag) => (
-                      <span key={tag} className="px-3 py-1 text-xs font-medium rounded-full bg-accent/10 text-accent-light border border-accent/10">
+                      <span key={tag} className="px-3 py-1 text-xs font-medium rounded-full bg-black/5 border border-black/8 text-charcoal">
                         {tag}
                       </span>
                     ))}
@@ -198,34 +197,25 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Section Divider */}
-      <div className="section-divider max-w-6xl mx-auto" />
+      {/* Divider */}
+      <hr className="border-t border-black/10 max-w-5xl mx-auto" />
 
-      {/* ==================== CERTIFICATIONS SECTION ==================== */}
-      <section id="certifications" className="relative py-28 overflow-hidden">
-        {/* Background decorations */}
-        <div className="absolute top-0 right-1/4 w-80 h-80 bg-accent/5 rounded-full blur-[100px]" />
-
-        <div className="relative max-w-6xl mx-auto px-6">
+      {/* ==================== CERTIFICATIONS ==================== */}
+      <section id="certifications" className="py-[88px]">
+        <div className="max-w-5xl mx-auto px-6">
           <AnimateOnScroll className="text-center mb-16">
-            <p className="text-accent-light text-sm font-semibold tracking-widest uppercase mb-4">Achievements</p>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-              My <span className="gradient-text">Certifications</span>
-            </h2>
-            <p className="text-muted text-lg max-w-2xl mx-auto">Beberapa sertifikasi yang telah saya peroleh untuk memvalidasi keahlian di bidang Frontend Web Development.</p>
+            <p className="text-body-text text-xs font-medium tracking-widest uppercase mb-4">Achievements</p>
+            <h2 className="font-display text-3xl md:text-4xl font-semibold text-ink mb-4">My Certifications</h2>
+            <p className="text-body-text text-base max-w-2xl mx-auto">Beberapa sertifikasi yang telah saya peroleh untuk memvalidasi keahlian di bidang Frontend Web Development.</p>
           </AnimateOnScroll>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
             {certifications.map((cert, index) => (
-              <AnimateOnScroll key={cert.title} delay={index * 100}>
-                <a
-                  href={cert.pdf}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="glass-card rounded-2xl p-6 flex flex-col items-center text-center group hover:border-accent/40 h-full hover:bg-[rgba(255,255,255,0.06)] hover:-translate-y-1 hover:shadow-[0_20px_60px_rgba(124,92,252,0.1)]"
-                >
-                  <div className="w-16 h-16 rounded-full bg-accent/10 flex items-center justify-center mb-6 text-accent-light group-hover:scale-110 transition-transform duration-300">
-                    <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <AnimateOnScroll key={cert.title} delay={index * 80}>
+                <a href={cert.pdf} target="_blank" rel="noopener noreferrer" className={`${glassCardHover} p-8 flex flex-col items-center text-center h-full block`}>
+                  {/* Icon */}
+                  <div className="w-14 h-14 rounded-full bg-white/70 border border-black/10 flex items-center justify-center mb-5">
+                    <svg className="w-6 h-6 text-ink" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -234,9 +224,9 @@ export default function Home() {
                       />
                     </svg>
                   </div>
-                  <h3 className="text-lg font-bold mb-2 group-hover:text-accent-light transition-colors">{cert.title}</h3>
-                  <p className="text-foreground font-medium text-sm mb-1">{cert.issuer}</p>
-                  <p className="text-muted text-xs">{cert.date}</p>
+                  <h3 className="font-display text-base font-semibold text-ink mb-2">{cert.title}</h3>
+                  <p className="text-ink text-sm font-medium mb-1">{cert.issuer}</p>
+                  <p className="text-body-text text-xs">{cert.date}</p>
                 </a>
               </AnimateOnScroll>
             ))}
@@ -244,73 +234,54 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Section Divider */}
-      <div className="section-divider max-w-6xl mx-auto" />
+      {/* Divider */}
+      <hr className="border-t border-black/10 max-w-5xl mx-auto" />
 
-      {/* ==================== CONTACT SECTION ==================== */}
-      <section id="contact" className="relative py-28 overflow-hidden">
-        {/* Background decorations */}
-        <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-accent/8 rounded-full blur-[120px]" />
-        <div className="absolute top-0 right-1/4 w-64 h-64 bg-accent-light/5 rounded-full blur-[100px]" />
-
-        <div className="relative max-w-6xl mx-auto px-6">
-          {/* Section Header */}
+      {/* ==================== CONTACT ==================== */}
+      <section id="contact" className="py-[88px]">
+        <div className="max-w-5xl mx-auto px-6">
           <AnimateOnScroll className="text-center mb-16">
-            <p className="text-accent-light text-sm font-semibold tracking-widest uppercase mb-4">Get In Touch</p>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-              Let&apos;s <span className="gradient-text">Connect</span>
-            </h2>
-            <p className="text-muted text-lg max-w-2xl mx-auto">Tertarik untuk berkolaborasi atau memiliki pertanyaan? Jangan ragu untuk menghubungi saya.</p>
+            <p className="text-body-text text-xs font-medium tracking-widest uppercase mb-4">Get In Touch</p>
+            <h2 className="font-display text-3xl md:text-4xl font-semibold text-ink mb-4">Let&apos;s Connect</h2>
+            <p className="text-body-text text-base max-w-2xl mx-auto">Tertarik untuk berkolaborasi atau memiliki pertanyaan? Jangan ragu untuk menghubungi saya.</p>
           </AnimateOnScroll>
 
           {/* Contact Card */}
-          <AnimateOnScroll className="max-w-xl mx-auto" delay={100}>
-            <div className="glass-card rounded-3xl p-6 sm:p-10 text-center relative overflow-hidden">
-              {/* Decorative gradient */}
-              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-accent to-transparent" />
-
-              {/* Email icon */}
-              <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-accent/10 flex items-center justify-center animate-float">
-                <svg className="w-9 h-9 text-accent-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          <AnimateOnScroll className="max-w-md mx-auto" delay={100}>
+            <div className={`${glassCard} p-10 text-center`}>
+              {/* WhatsApp icon */}
+              <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-white/70 border border-black/10 flex items-center justify-center animate-float">
+                <svg className="w-8 h-8 text-ink" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
                 </svg>
               </div>
 
-              <h3 className="text-2xl font-bold mb-3">Send Me an Email</h3>
-              <p className="text-muted mb-8 max-w-sm mx-auto">Kirimkan email kepada saya dan saya akan segera merespons pesan Anda.</p>
+              <h3 className="font-display text-xl font-semibold text-ink mb-2">Chat via WhatsApp</h3>
+              <p className="text-body-text text-sm mb-8 max-w-xs mx-auto">Kirimkan pesan WhatsApp kepada saya dan saya akan segera merespons.</p>
 
               <a
-                href="mailto:rafaelevan2005@gmail.com"
-                className="btn-shine inline-flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-10 py-3 sm:py-4 bg-accent hover:bg-accent/90 text-white font-semibold rounded-full transition-all duration-300 hover:shadow-lg hover:shadow-accent/25 text-sm sm:text-base break-all"
+                id="whatsapp-contact"
+                href={WA_LINK}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 px-8 py-2.5 bg-ink text-white text-sm font-medium rounded-full transition-colors duration-200 hover:bg-ink-deep"
               >
-                <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
                 </svg>
-                rafaelevan2005@gmail.com
+                +62 822-7955-1837
               </a>
-
-              {/* Decorative circles */}
-              <div className="absolute -top-10 -right-10 w-32 h-32 border border-accent/5 rounded-full" />
-              <div className="absolute -bottom-16 -left-16 w-48 h-48 border border-accent/5 rounded-full" />
             </div>
           </AnimateOnScroll>
         </div>
       </section>
 
       {/* ==================== FOOTER ==================== */}
-      <footer className="border-t border-border py-8">
-        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-muted text-sm">
-            &copy; {new Date().getFullYear()} <span className="gradient-text font-semibold">Rafael Evan Kristanto</span>. All rights reserved.
-          </p>
+      <footer className="border-t border-black/10 py-8 bg-white/60 backdrop-blur-sm">
+        <div className="max-w-5xl mx-auto px-6 text-center">
+          <p className="text-body-text text-xs">&copy; {new Date().getFullYear()} Rafael Evan Kristanto. All rights reserved.</p>
         </div>
       </footer>
     </div>
   );
 }
-
-const navFooterLinks = [
-  { label: "About", href: "#about" },
-  { label: "Projects", href: "#projects" },
-  { label: "Contact", href: "#contact" },
-];
