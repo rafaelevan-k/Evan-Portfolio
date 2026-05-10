@@ -28,7 +28,7 @@ const projects = [
     title: "Portofolio",
     role: "Frontend Developer",
     description: "Worked as a Frontend Developer on Portfolio, a personal platform to showcase my projects and skills.",
-    image: "/project_portofolio.webp",
+    image: "/project_porto2.webp",
     tags: ["Next.js", "TypeScript", "Tailwind CSS"],
   },
   {
@@ -86,8 +86,8 @@ export default function Home() {
       <section id="about" className="min-h-screen flex items-center pt-14">
         <div className="max-w-5xl mx-auto px-6 py-12 w-full">
           <div className="flex flex-col lg:flex-row items-center lg:items-start justify-center gap-12 lg:gap-20">
-            {/* Profile Image */}
-            <div className="animate-fade-in-up flex-shrink-0 lg:mt-8">
+            {/* Profile Image & Tech Stack */}
+            <div className="animate-fade-in-up flex-shrink-0 lg:mt-8 flex flex-col items-center">
               <div className="relative">
                 {/* Ring border around photo */}
                 <div className="relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-full overflow-hidden border-4 border-white/60 shadow-xl ring-1 ring-black/10">
@@ -97,6 +97,34 @@ export default function Home() {
                 <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 px-5 py-2 rounded-full bg-white/90 backdrop-blur-sm border border-black/10 text-sm font-medium text-charcoal whitespace-nowrap shadow-md">
                   <span className="w-2.5 h-2.5 rounded-full bg-green-500" />
                   Available for hire
+                </div>
+              </div>
+
+              {/* Tech Stack Icons */}
+              <div className="flex gap-4 sm:gap-6 mt-8 justify-center items-center">
+                {/* Vue.js */}
+                <div className="w-12 h-12 flex items-center justify-center rounded-full bg-white/80 border border-black/10 shadow-sm transition-transform hover:scale-110" title="Vue.js">
+                  <svg className="w-6 h-6 text-[#4FC08D]" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M24,1.61H14.06L12,5.16,9.94,1.61H0L12,22.39ZM12,14.08,5.16,2.23H9.59L12,6.41l2.41-4.18h4.43Z" />
+                  </svg>
+                </div>
+                {/* Laravel */}
+                <div className="w-12 h-12 flex items-center justify-center rounded-full bg-white/80 border border-black/10 shadow-sm transition-transform hover:scale-110" title="Laravel">
+                  <svg className="w-6 h-6 text-[#FF2D20]" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M22.618 6.452L12.75.753a1.51 1.51 0 00-1.5 0L1.382 6.452A1.493 1.493 0 00.63 7.747v11.396c0 .546.295 1.05.752 1.314l9.868 5.699a1.51 1.51 0 001.5 0l9.868-5.699a1.495 1.495 0 00.752-1.314V7.747a1.494 1.494 0 00-.752-1.295zm-1.026 12.355l-9.155 5.287a.5.5 0 01-.482 0l-9.146-5.287a.494.494 0 01-.252-.429v-5.234l4.982 2.876V19.49l4.414 2.548V13.88l-9.15-5.28 9.15-5.282a.5.5 0 01.482 0l9.15 5.282-9.15 5.28v8.158l4.415-2.548v-3.473l4.982-2.876v5.234a.494.494 0 01-.24.42zm-9.35-7.072L3.087 6.453l9.155-5.287 9.155 5.287-9.155 5.282z" />
+                  </svg>
+                </div>
+                {/* Next.js */}
+                <div className="w-12 h-12 flex items-center justify-center rounded-full bg-white/80 border border-black/10 shadow-sm transition-transform hover:scale-110" title="Next.js">
+                  <svg className="w-6 h-6 text-ink" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 22.75C6.06294 22.75 1.25 17.9371 1.25 12C1.25 6.06294 6.06294 1.25 12 1.25C17.9371 1.25 22.75 6.06294 22.75 12C22.75 17.9371 17.9371 22.75 12 22.75ZM20.0888 18.0645C21.758 16.4259 22.75 14.3315 22.75 12C22.75 6.06294 17.9371 1.25 12 1.25C6.06294 1.25 1.25 6.06294 1.25 12C1.25 17.9371 6.06294 22.75 12 22.75C14.316 22.75 16.4022 21.7744 18.04 20.116L17.9897 20.0483L9.17646 8.35821H6.70296V16.3262H8.38459V10.1552L16.4862 20.897C16.8924 20.5292 17.2721 20.1264 17.6185 19.6917L17.7554 19.8973H20.0888V18.0645ZM16.0378 16.3262H17.7194V7.55529H16.0378V16.3262Z" />
+                  </svg>
+                </div>
+                {/* MySQL */}
+                <div className="w-12 h-12 flex items-center justify-center rounded-full bg-white/80 border border-black/10 shadow-sm transition-transform hover:scale-110" title="MySQL">
+                  <svg className="w-6 h-6 text-[#4479A1]" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M23.14 13.91C23.14 13.91 22.38 15.65 20.52 16.89C18.66 18.13 15.63 19.24 12 19.24C8.37 19.24 5.34 18.13 3.48 16.89C1.62 15.65 .86 13.91 .86 13.91M11.96 4.79C13.25 4.79 14.33 4.96 15.11 5.25L15.34 5.34L15.02 5.58C14.6 5.89 14.24 6.2 13.95 6.47L13.82 6.59L13.67 6.51C13.2 6.28 12.63 6.13 11.96 6.13C10.74 6.13 9.77 6.44 9.17 7.02L8.91 7.27L8.65 7.03C7.94 6.37 6.84 5.92 5.53 5.75L5.15 5.7M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2Z" />
+                  </svg>
                 </div>
               </div>
             </div>
@@ -248,7 +276,6 @@ export default function Home() {
 
           {/* Contact Cards Grid */}
           <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            
             {/* WhatsApp Card */}
             <AnimateOnScroll delay={100} className="h-full">
               <div className={`${glassCard} p-10 text-center h-full flex flex-col items-center justify-center`}>
@@ -283,7 +310,11 @@ export default function Home() {
                 {/* GitHub icon */}
                 <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-white/70 border border-black/10 flex items-center justify-center animate-float" style={{ animationDelay: "1s" }}>
                   <svg className="w-8 h-8 text-ink" fill="currentColor" viewBox="0 0 24 24">
-                    <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.866-.013-1.699-2.782.604-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.161 22 16.418 22 12c0-5.523-4.477-10-10-10z" />
+                    <path
+                      fillRule="evenodd"
+                      clipRule="evenodd"
+                      d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.866-.013-1.699-2.782.604-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.161 22 16.418 22 12c0-5.523-4.477-10-10-10z"
+                    />
                   </svg>
                 </div>
 
@@ -298,7 +329,11 @@ export default function Home() {
                   className="mt-auto inline-flex items-center justify-center gap-2 px-8 py-2.5 bg-ink text-white text-sm font-medium rounded-full transition-colors duration-200 hover:bg-ink-deep"
                 >
                   <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                    <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.866-.013-1.699-2.782.604-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.161 22 16.418 22 12c0-5.523-4.477-10-10-10z" />
+                    <path
+                      fillRule="evenodd"
+                      clipRule="evenodd"
+                      d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.866-.013-1.699-2.782.604-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.161 22 16.418 22 12c0-5.523-4.477-10-10-10z"
+                    />
                   </svg>
                   View GitHub
                 </a>
