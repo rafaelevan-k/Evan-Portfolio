@@ -6,35 +6,35 @@ const projects = [
   {
     title: "Sistem Informasi Inventory",
     role: "Full-Stack Developer",
-    description: "Membangun sistem informasi pencatatan inventory multi-user untuk manajemen data dan monitoring barang suatu universitas yang memiliki fitur CRUD, pencarian, filter data, serta form pengaduan barang rusak.",
+    description: "Built a multi-user inventory tracking information system for university data management and goods monitoring, featuring CRUD, search, data filtering, and a damaged goods reporting form.",
     image: "/project_inventory.webp",
     tags: ["Next.js", "TypeScript", "MySQL"],
   },
   {
     title: "CyberShark LMS",
     role: "Frontend Developer",
-    description: "Menjadi seorang Frontend Developer dalam project CyberShark LMS, sebuah platform LMS untuk bimbel yang memiliki fitur video dan text learning, quiz assessment, dan tracking nilai siswa.",
+    description: "Worked as a Frontend Developer on CyberShark LMS, a tutoring platform featuring video and text-based learning, quiz assessments, and student grade tracking.",
     image: "/project_cybershark.webp",
     tags: ["Laravel", "CSS", "MySQL"],
   },
   {
     title: "Sinau Matika",
     role: "Frontend Developer",
-    description: "Menjadi seorang Frontend Developer dalam project Sinau Matika, sebuah platform LMS dengan gamifikasi yang interaktif dan menarik untuk mata pelajaran Matematika siswa SD Kanisius Sorowajan.",
+    description: "Worked as a Frontend Developer on Sinau Matika, an interactive and engaging gamified LMS platform for Mathematics for elementary school students at SD Kanisius Sorowajan.",
     image: "/project_sinaumatika.webp",
     tags: ["Vue.js", "Slim", "MySQL"],
   },
   {
     title: "Portofolio",
     role: "Frontend Developer",
-    description: "Menjadi seorang Frontend Developer dalam project Portofolio, sebuah platform untuk menampilkan portofolio saya.",
+    description: "Worked as a Frontend Developer on Portfolio, a personal platform to showcase my projects and skills.",
     image: "/project_portofolio.webp",
     tags: ["Next.js", "TypeScript", "Tailwind CSS"],
   },
   {
     title: "E-Catalog Maha Laptop",
     role: "Full-Stack Developer",
-    description: "Menjadi seorang Fullstack Developer dalam project E-Catalog Maha Laptop, sebuah platform untuk menampilkan katalog produk laptop, lengkap dengan fitur CRUD dan fitur pencarian untuk Admin dan Customer.",
+    description: "Worked as a Full-Stack Developer on E-Catalog Maha Laptop, a platform showcasing laptop product catalogs, complete with CRUD and search features for both Admins and Customers.",
     image: "/project_mahalaptop.webp",
     tags: ["Laravel", "Tailwind CSS", "MySQL"],
   },
@@ -42,7 +42,7 @@ const projects = [
     title: "Yuna Personal Assistant",
     role: "Full-Stack Developer",
     description:
-      "Menjadi seorang Fullstack Developer dalam membangun Yuna Personal Assistant, sebuah AI chatbot sekaligus AI Agent untuk coding framework Laravel. Menggunakan model LLM local Deepseek Coder dan Llama3 dan integrasi teknologi Web Search API dari Google",
+      "Worked as a Full-Stack Developer building Yuna Personal Assistant, an AI chatbot and AI Agent for the Laravel coding framework. Utilized local LLM models (Deepseek Coder and Llama3) and integrated Google's Web Search API technology.",
     image: "/project_yuna.webp",
     tags: ["Vue.js", "Python", "Tailwind CSS"],
   },
@@ -70,7 +70,7 @@ const certifications = [
 ];
 
 const WA_NUMBER = "6282279551837";
-const WA_MESSAGE = encodeURIComponent("Halo, kami tertarik dengan portfolio yang Anda miliki dan berencana untuk menghubungi Anda lebih lanjut...");
+const WA_MESSAGE = encodeURIComponent("Hello, we are interested in your portfolio and would like to contact you further...");
 const WA_LINK = `https://wa.me/${WA_NUMBER}?text=${WA_MESSAGE}`;
 
 // Shared glass card class
@@ -122,7 +122,7 @@ export default function Home() {
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
-                  Lihat Projek
+                  View Projects
                 </a>
                 <a
                   href="#contact"
@@ -132,7 +132,7 @@ export default function Home() {
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
-                  Hubungi Saya
+                  Contact Me
                 </a>
               </div>
 
@@ -163,7 +163,7 @@ export default function Home() {
           <AnimateOnScroll className="text-center mb-16">
             <p className="text-body-text text-xs font-medium tracking-widest uppercase mb-4">Portfolio</p>
             <h2 className="font-display text-3xl md:text-4xl font-semibold text-ink mb-4">Featured Projects</h2>
-            <p className="text-body-text text-base max-w-2xl mx-auto">Beberapa projek terbaik yang telah saya kerjakan, mencakup berbagai teknologi dan solusi digital.</p>
+            <p className="text-body-text text-base max-w-2xl mx-auto">Some of the best projects I have worked on, covering various technologies and digital solutions.</p>
           </AnimateOnScroll>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -206,7 +206,7 @@ export default function Home() {
           <AnimateOnScroll className="text-center mb-16">
             <p className="text-body-text text-xs font-medium tracking-widest uppercase mb-4">Achievements</p>
             <h2 className="font-display text-3xl md:text-4xl font-semibold text-ink mb-4">My Certifications</h2>
-            <p className="text-body-text text-base max-w-2xl mx-auto">Beberapa sertifikasi yang telah saya peroleh untuk memvalidasi keahlian di bidang Frontend Web Development.</p>
+            <p className="text-body-text text-base max-w-2xl mx-auto">Several certifications I have obtained to validate my skills in Frontend Web Development.</p>
           </AnimateOnScroll>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -243,36 +243,68 @@ export default function Home() {
           <AnimateOnScroll className="text-center mb-16">
             <p className="text-body-text text-xs font-medium tracking-widest uppercase mb-4">Get In Touch</p>
             <h2 className="font-display text-3xl md:text-4xl font-semibold text-ink mb-4">Let&apos;s Connect</h2>
-            <p className="text-body-text text-base max-w-2xl mx-auto">Tertarik untuk berkolaborasi atau memiliki pertanyaan? Jangan ragu untuk menghubungi saya.</p>
+            <p className="text-body-text text-base max-w-2xl mx-auto">Interested in collaborating or have a question? Don't hesitate to contact me.</p>
           </AnimateOnScroll>
 
-          {/* Contact Card */}
-          <AnimateOnScroll className="max-w-md mx-auto" delay={100}>
-            <div className={`${glassCard} p-10 text-center`}>
-              {/* WhatsApp icon */}
-              <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-white/70 border border-black/10 flex items-center justify-center animate-float">
-                <svg className="w-8 h-8 text-ink" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-                </svg>
+          {/* Contact Cards Grid */}
+          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            
+            {/* WhatsApp Card */}
+            <AnimateOnScroll delay={100} className="h-full">
+              <div className={`${glassCard} p-10 text-center h-full flex flex-col items-center justify-center`}>
+                {/* WhatsApp icon */}
+                <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-white/70 border border-black/10 flex items-center justify-center animate-float">
+                  <svg className="w-8 h-8 text-ink" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                  </svg>
+                </div>
+
+                <h3 className="font-display text-xl font-semibold text-ink mb-2">Chat via WhatsApp</h3>
+                <p className="text-body-text text-sm mb-8 max-w-xs mx-auto">Send me a WhatsApp message and I will respond shortly.</p>
+
+                <a
+                  id="whatsapp-contact"
+                  href={WA_LINK}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-auto inline-flex items-center justify-center gap-2 px-8 py-2.5 bg-ink text-white text-sm font-medium rounded-full transition-colors duration-200 hover:bg-ink-deep"
+                >
+                  <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                  </svg>
+                  +62 822-7955-1837
+                </a>
               </div>
+            </AnimateOnScroll>
 
-              <h3 className="font-display text-xl font-semibold text-ink mb-2">Chat via WhatsApp</h3>
-              <p className="text-body-text text-sm mb-8 max-w-xs mx-auto">Kirimkan pesan WhatsApp kepada saya dan saya akan segera merespons.</p>
+            {/* GitHub Card */}
+            <AnimateOnScroll delay={200} className="h-full">
+              <div className={`${glassCard} p-10 text-center h-full flex flex-col items-center justify-center`}>
+                {/* GitHub icon */}
+                <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-white/70 border border-black/10 flex items-center justify-center animate-float" style={{ animationDelay: "1s" }}>
+                  <svg className="w-8 h-8 text-ink" fill="currentColor" viewBox="0 0 24 24">
+                    <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.866-.013-1.699-2.782.604-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.161 22 16.418 22 12c0-5.523-4.477-10-10-10z" />
+                  </svg>
+                </div>
 
-              <a
-                id="whatsapp-contact"
-                href={WA_LINK}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 px-8 py-2.5 bg-ink text-white text-sm font-medium rounded-full transition-colors duration-200 hover:bg-ink-deep"
-              >
-                <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-                </svg>
-                +62 822-7955-1837
-              </a>
-            </div>
-          </AnimateOnScroll>
+                <h3 className="font-display text-xl font-semibold text-ink mb-2">Visit my GitHub</h3>
+                <p className="text-body-text text-sm mb-8 max-w-xs mx-auto">Check out my repositories, open-source contributions, and the code behind my projects.</p>
+
+                <a
+                  id="github-contact"
+                  href="https://github.com/rafaelevan-k"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-auto inline-flex items-center justify-center gap-2 px-8 py-2.5 bg-ink text-white text-sm font-medium rounded-full transition-colors duration-200 hover:bg-ink-deep"
+                >
+                  <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                    <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.866-.013-1.699-2.782.604-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.161 22 16.418 22 12c0-5.523-4.477-10-10-10z" />
+                  </svg>
+                  View GitHub
+                </a>
+              </div>
+            </AnimateOnScroll>
+          </div>
         </div>
       </section>
 
