@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Nunito } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import "./globals.css";
 
 const nunito = Nunito({
@@ -35,10 +36,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <body className={`${nunito.variable} ${inter.variable} antialiased`}>
-        {children}
-        <Analytics />
+    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+      <body className={`${nunito.variable} ${inter.variable} antialiased transition-colors duration-300`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+          <Analytics />
+        </ThemeProvider>
       </body>
     </html>
   );

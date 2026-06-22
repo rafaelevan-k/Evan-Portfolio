@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Rafael Evan Kristanto - Interactive 3D Portfolio
+
+A highly interactive and immersive 3D developer portfolio built to showcase professional experiences, projects, and credentials. The core feature of this portfolio is "The Archive", an interactive 3D documentation space where users can physically navigate and open books representing different categories of achievements, such as Curriculum Vitae, Certifications, Volunteer experiences, and Awards.
+
+## Key Features
+
+*   **Interactive 3D Environment**: Powered by Three.js and React Three Fiber, the portfolio features an exploratory 3D room with dynamic lighting, shadows, and camera controls.
+*   **Custom PDF Engine**: A bespoke dual-page book spread reader built on top of `react-pdf`. It supports seamless contiguous reading across multiple documents, dynamic pagination, and high-performance caching.
+*   **Immersive Transitions**: Silky smooth animations and route transitions powered by Framer Motion, connecting standard 2D web interfaces with the 3D WebGL canvas.
+*   **Performance Optimized**: Features advanced WebGL optimization techniques including Device Pixel Ratio (DPR) capping, static shadow baking, and adaptive resolution scaling to maintain high framerates across devices.
+*   **Responsive Design**: A seamless experience across desktop and mobile. On mobile devices, the 3D environment gracefully degrades to a stylized 2D fallback layout for optimal usability.
+*   **Dark/Light Mode Sync**: The application features a robust theming system where the UI, 3D environment lighting, and post-processing effects synchronize perfectly with the user's theme preference.
+
+## Technology Stack
+
+*   **Framework**: Next.js (App Router), React
+*   **Language**: TypeScript
+*   **Styling**: Tailwind CSS
+*   **3D Rendering**: Three.js, React Three Fiber, React Three Drei
+*   **Animations**: Framer Motion
+*   **PDF Rendering**: react-pdf
+*   **Icons**: Lucide React, React Icons
+
+## Project Structure
+
+*   `/app`: Next.js App Router configuration and main pages.
+*   `/components/archive`: Core 3D components, Bookshelf logic, and the Book Spread PDF engine.
+*   `/components/entrance`: 3D transition components bridging the 2D interface and the 3D archive.
+*   `/components/ui`: Reusable UI components and theme controllers.
+*   `/lib`: Application utilities, configurations, and the `archiveBooks.ts` data structure.
+*   `/public/documents`: Static PDF assets served in the archive.
 
 ## Getting Started
 
-First, run the development server:
+1. Clone the repository and install dependencies:
+   ```bash
+   npm install
+   ```
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+2. Run the development server:
+   ```bash
+   npm run dev
+   ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Open `http://localhost:3000` in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Contact
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Feel free to explore the interactive archive and reach out if you are interested in building something together.

@@ -1,29 +1,68 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:is(.dark *));
+
 @theme {
   /* ── Colors: Surface ── */
-  --color-canvas: #ffffff;
-  --color-canvas-glass: rgba(255, 255, 255, 0.82);
-  --color-canvas-glass-strong: rgba(255, 255, 255, 0.92);
-  --color-surface-soft: rgba(248, 248, 248, 0.88);
-  --color-surface-dark: #1a1a1a;
-
+  --color-canvas: var(--canvas);
+  --color-canvas-glass: var(--canvas-glass);
+  --color-canvas-glass-strong: var(--canvas-glass-strong);
+  --color-surface-soft: var(--surface-soft);
+  --color-surface-dark: var(--surface-dark);
+  
   /* ── Colors: Ink / Text ── */
-  --color-ink: #1a1a1a;
-  --color-ink-deep: #090909;
-  --color-charcoal: #3d3d3d;
-  --color-body-text: #5a5a5a;
-  --color-muted-text: #8a8a8a;
-  --color-on-dark: #ffffff;
+  --color-ink: var(--ink);
+  --color-ink-deep: var(--ink-deep);
+  --color-charcoal: var(--charcoal);
+  --color-body-text: var(--body-text);
+  --color-muted-text: var(--muted-text);
+  --color-on-dark: var(--on-dark);
 
   /* ── Colors: Border ── */
-  --color-hairline: rgba(0, 0, 0, 0.10);
-  --color-hairline-strong: rgba(0, 0, 0, 0.18);
+  --color-hairline: var(--hairline);
+  --color-hairline-strong: var(--hairline-strong);
 
   /* ── Typography ── */
-  --font-display: "Nunito", system-ui, -apple-system, sans-serif;
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: ui-monospace, "JetBrains Mono", "Fira Code", monospace;
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans);
+}
+
+:root {
+  /* Light Theme Colors */
+  --canvas: #fafafa;
+  --canvas-glass: rgba(250, 250, 250, 0.82);
+  --canvas-glass-strong: rgba(250, 250, 250, 0.95);
+  --surface-soft: rgba(240, 240, 240, 0.88);
+  --surface-dark: #111111;
+  
+  --ink: #111111;
+  --ink-deep: #000000;
+  --charcoal: #333333;
+  --body-text: #555555;
+  --muted-text: #888888;
+  --on-dark: #ffffff;
+  
+  --hairline: rgba(0, 0, 0, 0.08);
+  --hairline-strong: rgba(0, 0, 0, 0.16);
+}
+
+.dark {
+  /* Dark Theme Colors */
+  --canvas: #0a0a0a;
+  --canvas-glass: rgba(10, 10, 10, 0.82);
+  --canvas-glass-strong: rgba(10, 10, 10, 0.95);
+  --surface-soft: rgba(30, 30, 30, 0.88);
+  --surface-dark: #fafafa;
+  
+  --ink: #ffffff;
+  --ink-deep: #fafafa;
+  --charcoal: #e0e0e0;
+  --body-text: #a0a0a0;
+  --muted-text: #666666;
+  --on-dark: #000000;
+  
+  --hairline: rgba(255, 255, 255, 0.12);
+  --hairline-strong: rgba(255, 255, 255, 0.24);
 }
 
 * {
@@ -31,62 +70,57 @@
   box-sizing: border-box;
 }
 
-/* ── Fixed background image ── */
 body {
-  color: #1a1a1a;
-  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  color: var(--ink);
+  background-color: var(--canvas);
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
-  background-color: #e8e8e8;
 }
 
+/* Subtle dot pattern background */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
-  z-index: -1;
-  background-image: url("/portfolio-bg.webp");
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  opacity: 0.32;
+  z-index: -2;
+  background-image: radial-gradient(var(--hairline) 1px, transparent 1px);
+  background-size: 24px 24px;
+  opacity: 0.8;
+  pointer-events: none;
 }
 
-/* White tint overlay so text stays readable */
+/* Gradient glow to make it feel premium */
 body::after {
   content: "";
   position: fixed;
   inset: 0;
   z-index: -1;
-  background: rgba(255, 255, 255, 0.55);
+  background: radial-gradient(circle at 50% 0%, var(--surface-soft) 0%, transparent 60%);
+  opacity: 0.6;
+  pointer-events: none;
 }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.15);
+  background: var(--hairline-strong);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.25);
+  background: var(--muted-text);
 }
 
-/* ── Float animation – contact icon ── */
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50%       { transform: translateY(-8px); }
-}
-.animate-float {
-  animation: float 4s ease-in-out infinite;
+/* Utilities */
+.glass-panel {
+  background: var(--canvas-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--hairline);
 }
 
-/* ── Fade-in-up for hero ── */
-@keyframes fade-in-up {
-  from { opacity: 0; transform: translateY(24px); }
-  to   { opacity: 1; transform: translateY(0); }
+.text-balance {
+  text-wrap: balance;
 }
-.animate-fade-in-up {
-  animation: fade-in-up 0.7s ease-out forwards;
-}
-.stagger-2 { animation-delay: 0.15s; }
+
