@@ -37,7 +37,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
-      <body className={`${nunito.variable} ${inter.variable} antialiased transition-colors duration-300`}>
+      <body className={`${nunito.variable} ${inter.variable} antialiased transition-colors duration-300`} suppressHydrationWarning>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

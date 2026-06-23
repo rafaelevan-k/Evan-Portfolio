@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowRight, MessageSquare, Download } from "lucide-react";
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import { ArrowRight, MessageSquare, Download, Monitor, X } from "lucide-react";
 import { SiNextdotjs, SiTailwindcss, SiVuedotjs, SiLaravel, SiMysql, SiPython, SiGithub, SiWhatsapp } from "react-icons/si";
 
 import { Entrance } from "@/components/entrance/Entrance";
@@ -12,7 +12,7 @@ import { CertificationCard } from "@/components/ui/CertificationCard";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import { ArchiveEntranceTransition } from "@/components/archive/ArchiveEntranceTransition";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const projects = [
   {
@@ -100,6 +100,16 @@ export default function Home() {
   const y = useTransform(scrollY, [0, 500], [0, 150]);
   const opacity = useTransform(scrollY, [0, 300], [1, 0]);
   const [isEnteringArchive, setIsEnteringArchive] = useState(false);
+  const [showMobileAlert, setShowMobileAlert] = useState(false);
+
+  useEffect(() => {
+    // Show alert on mobile/tablet (less than desktop width 1024px) if not dismissed yet
+    const isMobileOrTablet = window.innerWidth < 1024;
+    const hasSeenAlert = sessionStorage.getItem("hasSeenMobileAlert");
+    if (isMobileOrTablet && !hasSeenAlert) {
+      setShowMobileAlert(true);
+    }
+  }, []);
 
   const handleEnterArchive = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -109,6 +119,38 @@ export default function Home() {
 
   return (
     <div className="relative overflow-x-hidden selection:bg-ink selection:text-on-dark">
+      <AnimatePresence>
+        {showMobileAlert && (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            className="fixed bottom-6 left-6 right-6 z-50 lg:hidden flex items-center justify-between gap-4 p-4 rounded-2xl border border-hairline bg-surface-soft/95 backdrop-blur-md shadow-2xl"
+          >
+            <div className="flex items-center gap-3">
+              <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-ink/5 flex items-center justify-center text-ink">
+                <Monitor className="w-5 h-5" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-sm font-semibold text-ink">Desktop Recommended</span>
+                <span className="text-xs text-muted-text max-w-[190px] sm:max-w-md leading-relaxed">
+                  For the best interactive 3D experience, please open this portfolio on a desktop device.
+                </span>
+              </div>
+            </div>
+            <button
+              onClick={() => {
+                sessionStorage.setItem("hasSeenMobileAlert", "true");
+                setShowMobileAlert(false);
+              }}
+              className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-muted-text hover:text-ink hover:bg-ink/5 transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
       <ArchiveEntranceTransition isTriggered={isEnteringArchive} />
       <Entrance />
       <Navbar />

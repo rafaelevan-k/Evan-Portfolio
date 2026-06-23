@@ -79,7 +79,7 @@ export default function ArchivePage() {
   }
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden bg-[#0a0a0a] selection:bg-white/20 selection:text-white">
+    <div className="relative w-screen h-screen overflow-hidden bg-[#F5F2EB] selection:bg-white/20 selection:text-white">
       {/* 3D Environment */}
       <ArchiveScene selectedBook={selectedBook} setSelectedBook={setSelectedBook} />
 
@@ -106,19 +106,7 @@ export default function ArchivePage() {
         )}
       </AnimatePresence>
       
-      {/* Archive Title (visible when no book is selected) */}
-      <AnimatePresence>
-        {!selectedBook && (
-          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-40 text-center pointer-events-none">
-            <h1 className="font-display text-2xl md:text-3xl font-bold tracking-[0.2em] uppercase text-white drop-shadow-xl mb-2">
-              The Archive
-            </h1>
-            <p className="text-xs md:text-sm tracking-widest uppercase text-white/40">
-              A collection of my journey
-            </p>
-          </div>
-        )}
-      </AnimatePresence>
+
     </div>
   );
 }
