@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { ArrowLeft, Book, ShieldCheck, Trophy, Users, ChevronRight } from "lucide-react";
+import { ArrowLeft, Book, ShieldCheck, Trophy, Users, ChevronRight, Info, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import type { BookCategory } from "@/lib/archiveBooks";
 
@@ -13,6 +13,7 @@ const BookSpreadReader = dynamic(() => import("@/components/archive/BookSpreadRe
 
 export function MobileArchiveFallback() {
   const [activeCategory, setActiveCategory] = useState<BookCategory | null>(null);
+  const [showAlert, setShowAlert] = useState(true);
 
   const categories: { id: BookCategory; label: string; icon: any; color: string }[] = [
     { id: "cv", label: "Curriculum Vitae", icon: Book, color: "bg-red-500" },
@@ -35,6 +36,34 @@ export function MobileArchiveFallback() {
           <h1 className="font-display text-4xl font-bold tracking-tight mb-2">The Archive</h1>
           <p className="text-white/50">A collection of my journey and documents.</p>
         </header>
+
+        <AnimatePresence>
+          {showAlert && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="mb-8 p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-start gap-4 backdrop-blur-md relative"
+            >
+              <div className="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center shrink-0">
+                <Info className="w-4 h-4 text-indigo-400" />
+              </div>
+              <div className="flex-1 pr-6">
+                <h3 className="text-indigo-300 font-medium text-sm mb-1">Desktop Experience Available</h3>
+                <p className="text-white/60 text-xs leading-relaxed">
+                  The full 3D interactive archive room is exclusively available on desktop devices. You are currently viewing the simplified mobile layout.
+                </p>
+              </div>
+              <button 
+                onClick={() => setShowAlert(false)}
+                className="absolute top-4 right-4 text-white/40 hover:text-white transition-colors"
+                aria-label="Close alert"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <div className="space-y-4">
           {categories.map((cat) => (
