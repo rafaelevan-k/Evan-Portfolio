@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { flushSync } from "react-dom";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
@@ -19,7 +20,18 @@ export function ThemeToggle({ className }: { className?: string }) {
 
   return (
     <button
-      onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+      onClick={() => {
+        const nextTheme = theme === "light" ? "dark" : "light";
+        if (!document.startViewTransition) {
+          setTheme(nextTheme);
+        } else {
+          document.startViewTransition(() => {
+            flushSync(() => {
+              setTheme(nextTheme);
+            });
+          });
+        }
+      }}
       className={cn(
         "relative flex items-center justify-center w-9 h-9 rounded-full transition-colors hover:bg-surface-soft",
         className
