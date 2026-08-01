@@ -65,9 +65,18 @@
   --hairline-strong: rgba(255, 255, 255, 0.24);
 }
 
-* {
+html {
   scroll-behavior: smooth;
+}
+
+* {
   box-sizing: border-box;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 body {
