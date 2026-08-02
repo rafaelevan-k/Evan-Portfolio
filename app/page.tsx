@@ -1,15 +1,35 @@
 "use client";
 
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import projectPortfolioImage from "@/public/project_porto2.webp";
 import { AnimatePresence, MotionConfig, motion, useMotionValue, useMotionValueEvent, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
-import { ArrowDown, ArrowRight, ArrowUpRight, ChevronUp, Menu, X } from "lucide-react";
+import { ArrowDown, ArrowRight, ArrowUpRight, ChevronUp, Gamepad2, Menu, X } from "lucide-react";
 import { SiGithub, SiWhatsapp } from "react-icons/si";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { ArchiveEntranceTransition } from "@/components/archive/ArchiveEntranceTransition";
 import { Entrance } from "@/components/entrance/Entrance";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+
+const GamifiedPortfolio = dynamic(
+  () => import("@/components/gamified/GamifiedPortfolio").then((module) => module.GamifiedPortfolio),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="fixed inset-0 z-[90] flex items-center justify-center bg-[#15202b] text-[#eeeae0]" role="status" aria-label="Preparing Rafael Line">
+        <div className="border border-white/15 px-6 py-5 text-center">
+          <p className="font-mono text-[8px] uppercase tracking-[0.25em] text-[#f2d99c]">REK Line / Yogyakarta</p>
+          <p className="mt-3 font-display text-lg font-semibold uppercase tracking-[0.08em]">Preparing the Night Shift…</p>
+        </div>
+      </div>
+    ),
+  },
+);
+
+const preloadGamifiedPortfolio = () => {
+  void import("@/components/gamified/GamifiedPortfolio");
+};
 
 const projects = [
   {
@@ -87,6 +107,7 @@ const projects = [
 const certifications = [
   {
     title: "Belajar Dasar Pemrograman Web",
+    displayTitle: "Web Programming Fundamentals",
     issuer: "Dicoding",
     date: "2026",
     pdf: "/documents/Dicoding_Sertifikat_Belajar-Dasar-Pemrograman-Web.pdf",
@@ -94,6 +115,7 @@ const certifications = [
   },
   {
     title: "Belajar Dasar Pemrograman JavaScript",
+    displayTitle: "JavaScript Programming Fundamentals",
     issuer: "Dicoding",
     date: "2026",
     pdf: "/documents/Dicoding_Sertifikat_Belajar-Dasar-Pemrograman-JavaScript.pdf",
@@ -101,6 +123,7 @@ const certifications = [
   },
   {
     title: "Belajar Membuat Frontend Web untuk Pemula",
+    displayTitle: "Building Front-End Web for Beginners",
     issuer: "Dicoding",
     date: "2026",
     pdf: "/documents/Dicoding_Sertifikat_Belajar-Membuat-Front-End-Web-untuk-Pemula.pdf",
@@ -138,12 +161,15 @@ export default function Home() {
     restDelta: 0.001,
   });
   const scrollTopVisibleRef = useRef(false);
+  const gameModeSwitchRef = useRef<HTMLButtonElement>(null);
   const [selectedProjectIndex, setSelectedProjectIndex] = useState(0);
   const [specialtyIndex, setSpecialtyIndex] = useState(0);
   const [activeSection, setActiveSection] = useState("about");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [isEnteringArchive, setIsEnteringArchive] = useState(false);
+  const [isGameMode, setIsGameMode] = useState(false);
+  const ambientMotionPaused = prefersReducedMotion || isGameMode;
 
   const cursorX = useMotionValue(-400);
   const cursorY = useMotionValue(-400);
@@ -187,12 +213,12 @@ export default function Home() {
   const selectedProjectHref = selectedProject.repoLink ? (selectedProject.isPrivate ? `/private-repo?repo=${encodeURIComponent(selectedProject.repoLink)}` : selectedProject.repoLink) : undefined;
 
   useEffect(() => {
-    if (prefersReducedMotion) return;
+    if (prefersReducedMotion || isGameMode) return;
     const intervalId = window.setInterval(() => {
       setSpecialtyIndex((current) => (current + 1) % specialties.length);
     }, 2600);
     return () => window.clearInterval(intervalId);
-  }, [prefersReducedMotion]);
+  }, [isGameMode, prefersReducedMotion]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -224,6 +250,21 @@ export default function Home() {
     setMobileMenuOpen(false);
   };
 
+  const enterGameMode = useCallback(() => {
+    setMobileMenuOpen(false);
+    setIsGameMode(true);
+  }, []);
+
+  const exitGameMode = useCallback(() => {
+    setIsGameMode(false);
+    window.requestAnimationFrame(() => gameModeSwitchRef.current?.focus());
+  }, []);
+
+  const enterArchiveFromGame = useCallback(() => {
+    setIsGameMode(false);
+    setIsEnteringArchive(true);
+  }, []);
+
   const updatePointer = (event: React.PointerEvent<HTMLElement>, xValue: ReturnType<typeof useMotionValue<number>>, yValue: ReturnType<typeof useMotionValue<number>>) => {
     if (prefersReducedMotion || event.pointerType === "touch") return;
     const bounds = event.currentTarget.getBoundingClientRect();
@@ -236,13 +277,14 @@ export default function Home() {
       <div
         className="relative isolate overflow-x-hidden bg-[#eeeae0] text-[#181816] selection:bg-[#d94b35] selection:text-white dark:bg-[#0c0c0b] dark:text-[#eeeae0]"
         onPointerMove={(event) => {
-          if (prefersReducedMotion || event.pointerType === "touch") return;
+          if (isGameMode || prefersReducedMotion || event.pointerType === "touch") return;
           cursorX.set(event.clientX);
           cursorY.set(event.clientY);
         }}
       >
-        <Entrance />
-        <ArchiveEntranceTransition isTriggered={isEnteringArchive} />
+        <div className={isGameMode ? "invisible" : undefined} aria-hidden={isGameMode || undefined} inert={isGameMode || undefined}>
+          <Entrance />
+          <ArchiveEntranceTransition isTriggered={isEnteringArchive} />
 
         {/* Washi grain and scroll-reactive Tokyo transit field */}
         <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden" aria-hidden="true">
@@ -332,6 +374,24 @@ export default function Home() {
             </nav>
 
             <div className="flex items-center gap-1">
+              <button
+                ref={gameModeSwitchRef}
+                type="button"
+                role="switch"
+                aria-checked={isGameMode}
+                aria-label="Enter Rafael Line Night Shift mode"
+                onPointerEnter={preloadGamifiedPortfolio}
+                onPointerDown={preloadGamifiedPortfolio}
+                onFocus={preloadGamifiedPortfolio}
+                onClick={enterGameMode}
+                className="group mr-1 flex h-9 items-center gap-2 border border-black/12 px-2 text-[8px] font-semibold uppercase tracking-[0.14em] transition-colors hover:border-[#d94b35]/55 hover:bg-[#d94b35]/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d94b35] dark:border-white/15 dark:hover:bg-white/5 sm:px-2.5"
+              >
+                <Gamepad2 className="h-4 w-4 text-[#d94b35]" />
+                <span className="hidden xl:inline">Night Shift</span>
+                <span className="relative h-4 w-7 bg-black/12 transition-colors group-hover:bg-black/20 dark:bg-white/15 dark:group-hover:bg-white/25">
+                  <span className="absolute left-0.5 top-0.5 h-3 w-3 bg-[#181816] transition-transform dark:bg-[#eeeae0]" />
+                </span>
+              </button>
               <ThemeToggle className="rounded-none hover:bg-black/5 dark:hover:bg-white/10" />
               <button
                 type="button"
@@ -439,7 +499,7 @@ export default function Home() {
 
                 <motion.svg
                   viewBox="0 0 400 400"
-                  animate={prefersReducedMotion ? undefined : { rotate: 360 }}
+                  animate={ambientMotionPaused ? undefined : { rotate: 360 }}
                   transition={{ duration: 34, ease: "linear", repeat: Infinity }}
                   className="absolute inset-0 h-full w-full overflow-visible text-[#d94b35]"
                 >
@@ -448,7 +508,7 @@ export default function Home() {
                 </motion.svg>
 
                 <motion.div
-                  animate={prefersReducedMotion ? undefined : { y: [0, -8, 0] }}
+                  animate={ambientMotionPaused ? undefined : { y: [0, -8, 0] }}
                   transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                   className="absolute right-0 top-[12%] bg-[#d94b35] px-3 py-5 text-xs font-semibold tracking-[0.25em] text-white [writing-mode:vertical-rl]"
                 >
@@ -710,6 +770,19 @@ export default function Home() {
             >
               <ChevronUp className="h-4 w-4" />
             </motion.button>
+          )}
+        </AnimatePresence>
+        </div>
+
+        <AnimatePresence>
+          {isGameMode && (
+            <GamifiedPortfolio
+              projects={projects}
+              certifications={certifications}
+              whatsappLink={WA_LINK}
+              onExit={exitGameMode}
+              onEnterArchive={enterArchiveFromGame}
+            />
           )}
         </AnimatePresence>
       </div>

@@ -137,6 +137,79 @@ body::after {
   text-wrap: balance;
 }
 
+/* Night Shift keeps a usable cab viewport on short landscape screens. */
+@media (max-height: 620px) and (orientation: landscape) {
+  .game-shell-header {
+    height: 3.5rem;
+  }
+
+  .game-route-strip {
+    top: 3.5rem;
+    padding-block: 0.3rem;
+  }
+
+  .game-route-strip [data-station-button] {
+    min-height: 3.25rem;
+  }
+
+  .game-route-strip [data-station-node] {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .game-route-strip [data-station-meta] {
+    display: none;
+  }
+
+  .game-route-line {
+    top: 1rem;
+  }
+
+  .game-stage {
+    top: 7.35rem;
+    bottom: 4.1rem;
+    padding: 0.35rem;
+  }
+
+  .game-controls {
+    min-height: 4.1rem;
+    padding-block: 0.35rem;
+  }
+
+  .game-controls [data-destination],
+  .game-controls [data-helper] {
+    display: none;
+  }
+
+  .game-primary {
+    min-height: 2.75rem;
+  }
+
+  .game-boarding,
+  .game-exploring {
+    top: 3.5rem;
+  }
+}
+
+@media (max-height: 430px) and (orientation: landscape) {
+  .game-route-strip {
+    display: none;
+  }
+
+  .game-platform-explore {
+    display: none;
+  }
+
+  .game-stage {
+    top: 3.5rem;
+    bottom: 4rem;
+  }
+
+  .game-controls {
+    min-height: 4rem;
+  }
+}
+
 /* ==================== VIEW TRANSITION (Theme Toggle) ==================== */
 ::view-transition-old(root),
 ::view-transition-new(root) {
