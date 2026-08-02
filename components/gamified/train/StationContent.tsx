@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { memo, useMemo, useState } from "react";
-import { SiGithub, SiWhatsapp } from "react-icons/si";
+import { SiGithub, SiGmail, SiWhatsapp } from "react-icons/si";
 
 import type { GameCertification, GameProject, TrainStation } from "./types";
 
@@ -25,6 +25,7 @@ type StationContentProps = {
   projects: GameProject[];
   certifications: GameCertification[];
   whatsappLink: string;
+  emailAddress: string;
   onEnterArchive: () => void;
 };
 
@@ -132,6 +133,18 @@ function buildWhatsappLink(whatsappLink: string, message: string) {
     const baseLink = whatsappLink.split("?")[0];
     return `${baseLink}?text=${encodeURIComponent(message)}`;
   }
+}
+
+function buildGmailLink(emailAddress: string, subject: string, message: string) {
+  const params = new URLSearchParams({
+    view: "cm",
+    fs: "1",
+    to: emailAddress,
+    su: subject,
+    body: message,
+  });
+
+  return `https://mail.google.com/mail/?${params.toString()}`;
 }
 
 function StationHeading({ station, title, copy }: { station: TrainStation; title: string; copy: string }) {
@@ -653,12 +666,16 @@ function ArchiveStation({ station, onEnterArchive }: { station: TrainStation; on
   );
 }
 
-function ContactStation({ station, whatsappLink }: { station: TrainStation; whatsappLink: string }) {
+function ContactStation({ station, whatsappLink, emailAddress }: { station: TrainStation; whatsappLink: string; emailAddress: string }) {
   const [purpose, setPurpose] = useState<ContactPurpose>("role");
   const selectedPurpose = contactPurposes.find((item) => item.id === purpose) ?? contactPurposes[0];
   const preparedWhatsappLink = useMemo(
     () => buildWhatsappLink(whatsappLink, selectedPurpose.message),
     [selectedPurpose.message, whatsappLink],
+  );
+  const preparedGmailLink = useMemo(
+    () => buildGmailLink(emailAddress, `Portfolio inquiry: ${selectedPurpose.label}`, selectedPurpose.message),
+    [emailAddress, selectedPurpose.label, selectedPurpose.message],
   );
 
   return (
@@ -705,16 +722,34 @@ function ContactStation({ station, whatsappLink }: { station: TrainStation; what
             <p className="mt-2 text-sm leading-6 text-white/80">{selectedPurpose.message}</p>
           </div>
 
-          <a
-            href={preparedWhatsappLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Open the prepared WhatsApp message in a new tab"
-            className="group mt-6 inline-flex min-h-12 w-full items-center justify-between bg-[#3f6e61] px-5 text-xs font-semibold uppercase tracking-[0.14em] text-white transition-colors hover:bg-[#345b50] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f2d99c] sm:w-auto sm:min-w-72"
-          >
-            <span className="flex items-center gap-3"><SiWhatsapp className="h-5 w-5" /> Open WhatsApp</span>
-            <Send className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </a>
+          <div className="mt-6 grid gap-2 sm:grid-cols-2">
+            <a
+              href={preparedWhatsappLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Open the prepared WhatsApp message in a new tab"
+              className="group inline-flex min-h-14 items-center justify-between bg-[#3f6e61] px-5 text-xs font-semibold uppercase tracking-[0.12em] text-white transition-colors hover:bg-[#345b50] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f2d99c]"
+            >
+              <span className="flex items-center gap-3"><SiWhatsapp className="h-5 w-5" /> Open WhatsApp</span>
+              <Send className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </a>
+            <a
+              href={preparedGmailLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Compose the prepared message to ${emailAddress} in Gmail`}
+              className="group inline-flex min-h-14 items-center justify-between bg-[#eee8dc] px-5 text-[#181816] transition-colors hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f2d99c]"
+            >
+              <span className="flex min-w-0 items-center gap-3">
+                <SiGmail className="h-5 w-5 shrink-0 text-[#d94b35]" />
+                <span className="min-w-0 text-left">
+                  <span className="block text-xs font-semibold uppercase tracking-[0.12em]">Open Gmail</span>
+                  <span className="mt-1 block truncate font-mono text-[10px] font-normal normal-case tracking-normal text-black/60">{emailAddress}</span>
+                </span>
+              </span>
+              <ArrowUpRight className="h-4 w-4 shrink-0 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+            </a>
+          </div>
         </div>
 
         <div className="flex flex-col justify-between border border-black/20 bg-[#e4dccf] p-5 sm:p-7">
@@ -736,7 +771,7 @@ function ContactStation({ station, whatsappLink }: { station: TrainStation; what
           </a>
 
           <div className="mt-8 flex items-center gap-3 text-xs font-medium text-black/60">
-            <Check className="h-4 w-4 text-[#3f6e61]" /> No completion lock. Choose either connection now.
+            <Check className="h-4 w-4 text-[#3f6e61]" /> No completion lock. Choose any connection now.
           </div>
         </div>
       </div>
@@ -744,7 +779,7 @@ function ContactStation({ station, whatsappLink }: { station: TrainStation; what
   );
 }
 
-function StationContentInner({ station, projects, certifications, whatsappLink, onEnterArchive }: StationContentProps) {
+function StationContentInner({ station, projects, certifications, whatsappLink, emailAddress, onEnterArchive }: StationContentProps) {
   switch (station.id) {
     case "profile":
       return <ProfileStation station={station} projects={projects} />;
@@ -755,7 +790,7 @@ function StationContentInner({ station, projects, certifications, whatsappLink, 
     case "archive":
       return <ArchiveStation station={station} onEnterArchive={onEnterArchive} />;
     case "contact":
-      return <ContactStation station={station} whatsappLink={whatsappLink} />;
+      return <ContactStation station={station} whatsappLink={whatsappLink} emailAddress={emailAddress} />;
   }
 }
 

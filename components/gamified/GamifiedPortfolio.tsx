@@ -65,6 +65,7 @@ type GamifiedPortfolioProps = {
   projects: GameProject[];
   certifications: GameCertification[];
   whatsappLink: string;
+  emailAddress: string;
   onExit: () => void;
   onEnterArchive: () => void;
 };
@@ -314,7 +315,7 @@ function PaperTicket({ visited, xp }: { visited: Set<StationId>; xp: number }) {
   );
 }
 
-export function GamifiedPortfolio({ projects, certifications, whatsappLink, onExit, onEnterArchive }: GamifiedPortfolioProps) {
+export function GamifiedPortfolio({ projects, certifications, whatsappLink, emailAddress, onExit, onEnterArchive }: GamifiedPortfolioProps) {
   const reducedMotion = useReducedMotion() ?? false;
   const rootRef = useRef<HTMLDivElement>(null);
   const ticketButtonRef = useRef<HTMLButtonElement>(null);
@@ -799,7 +800,7 @@ export function GamifiedPortfolio({ projects, certifications, whatsappLink, onEx
             </div>
             <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 py-7 [touch-action:pan-y] sm:px-7 md:px-10 md:py-9">
               <div className="mx-auto max-w-7xl">
-                <StationContent station={currentStation} projects={projects} certifications={certifications} whatsappLink={whatsappLink} onEnterArchive={onEnterArchive} />
+                <StationContent station={currentStation} projects={projects} certifications={certifications} whatsappLink={whatsappLink} emailAddress={emailAddress} onEnterArchive={onEnterArchive} />
               </div>
             </div>
           </motion.section>

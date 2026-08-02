@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import projectPortfolioImage from "@/public/project_porto2.webp";
 import { AnimatePresence, MotionConfig, motion, useMotionValue, useMotionValueEvent, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import { ArrowDown, ArrowRight, ArrowUpRight, ChevronUp, Gamepad2, Menu, X } from "lucide-react";
-import { SiGithub, SiWhatsapp } from "react-icons/si";
+import { SiGithub, SiGmail, SiWhatsapp } from "react-icons/si";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { ArchiveEntranceTransition } from "@/components/archive/ArchiveEntranceTransition";
@@ -144,6 +144,10 @@ const specialties = ["Full-Stack Engineering", "Interaction Design", "AI-assiste
 const WA_NUMBER = "6282279551837";
 const WA_MESSAGE = encodeURIComponent("Hello, we are interested in your portfolio and would like to contact you further...");
 const WA_LINK = `https://wa.me/${WA_NUMBER}?text=${WA_MESSAGE}`;
+const EMAIL_ADDRESS = "rafaelevan2005@gmail.com";
+const GMAIL_SUBJECT = encodeURIComponent("Portfolio inquiry");
+const GMAIL_BODY = encodeURIComponent("Hello Rafael, I found your portfolio and would like to discuss an opportunity with you.");
+const GMAIL_LINK = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(EMAIL_ADDRESS)}&su=${GMAIL_SUBJECT}&body=${GMAIL_BODY}`;
 
 export default function Home() {
   const prefersReducedMotion = useReducedMotion();
@@ -738,6 +742,22 @@ export default function Home() {
                   </span>
                   <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" />
                 </a>
+                <a
+                  href={GMAIL_LINK}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Compose an email to ${EMAIL_ADDRESS} in Gmail`}
+                  className="group flex items-center justify-between border-b border-black/20 py-5 dark:border-white/20"
+                >
+                  <span className="flex items-center gap-3">
+                    <SiGmail className="h-5 w-5 text-[#d94b35]" />
+                    <span>
+                      <span className="block font-semibold">Gmail</span>
+                      <span className="mt-1 block font-mono text-[9px] tracking-[0.08em] opacity-55">{EMAIL_ADDRESS}</span>
+                    </span>
+                  </span>
+                  <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" />
+                </a>
                 <a href="https://github.com/rafaelevan-k" target="_blank" rel="noopener noreferrer" className="group flex items-center justify-between border-b border-black/20 py-5 dark:border-white/20">
                   <span className="flex items-center gap-3">
                     <SiGithub className="h-5 w-5" />
@@ -780,6 +800,7 @@ export default function Home() {
               projects={projects}
               certifications={certifications}
               whatsappLink={WA_LINK}
+              emailAddress={EMAIL_ADDRESS}
               onExit={exitGameMode}
               onEnterArchive={enterArchiveFromGame}
             />
