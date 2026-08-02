@@ -1,31 +1,11 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import {
-  ArrowLeft,
-  ArrowRight,
-  Check,
-  ChevronLeft,
-  ChevronRight,
-  Gamepad2,
-  MapPin,
-  Sparkles,
-  Ticket,
-  TrainFront,
-  Trophy,
-  X,
-  Zap,
-} from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, ChevronLeft, ChevronRight, Gamepad2, MapPin, Sparkles, Ticket, TrainFront, Trophy, X, Zap } from "lucide-react";
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 
 import { StationContent } from "./train/StationContent";
-import {
-  trainStations,
-  type GameCertification,
-  type GameProject,
-  type StationId,
-  type TrainStation,
-} from "./train/types";
+import { trainStations, type GameCertification, type GameProject, type StationId, type TrainStation } from "./train/types";
 
 export type { GameCertification, GameProject } from "./train/types";
 
@@ -39,15 +19,7 @@ type JourneyState = {
   tripId: number;
 };
 
-type JourneyAction =
-  | { type: "BOARD" }
-  | { type: "SELECT"; index: number }
-  | { type: "DEPART" }
-  | { type: "DOORS_CLOSED" }
-  | { type: "REACHED_DESTINATION" }
-  | { type: "DOORS_OPEN" }
-  | { type: "EXPLORE" }
-  | { type: "RETURN_TO_TRAIN" };
+type JourneyAction = { type: "BOARD" } | { type: "SELECT"; index: number } | { type: "DEPART" } | { type: "DOORS_CLOSED" } | { type: "REACHED_DESTINATION" } | { type: "DOORS_OPEN" } | { type: "EXPLORE" } | { type: "RETURN_TO_TRAIN" };
 
 const initialJourney: JourneyState = {
   phase: "boarding",
@@ -79,15 +51,11 @@ function journeyReducer(state: JourneyState, action: JourneyAction): JourneyStat
     case "DOORS_CLOSED":
       return state.phase === "departing" ? { ...state, phase: "traveling" } : state;
     case "REACHED_DESTINATION":
-      return state.phase === "traveling"
-        ? { ...state, phase: "arriving", currentIndex: state.selectedIndex }
-        : state;
+      return state.phase === "traveling" ? { ...state, phase: "arriving", currentIndex: state.selectedIndex } : state;
     case "DOORS_OPEN":
       return state.phase === "arriving" ? { ...state, phase: "platform" } : state;
     case "EXPLORE":
-      return state.phase === "platform" && state.selectedIndex === state.currentIndex
-        ? { ...state, phase: "exploring" }
-        : state;
+      return state.phase === "platform" && state.selectedIndex === state.currentIndex ? { ...state, phase: "exploring" } : state;
     case "RETURN_TO_TRAIN":
       return state.phase === "exploring" ? { ...state, phase: "platform" } : state;
   }
@@ -159,11 +127,7 @@ function RouteStrip({ state, visited, reducedMotion, onSelect }: RouteStripProps
                 <span
                   data-station-node
                   className={`relative z-10 flex h-9 w-9 items-center justify-center rounded-full border-[3px] transition-[color,background-color,border-color,transform] duration-150 ${
-                    isSelected
-                      ? "scale-105 border-[#d94b35] bg-[#192234] text-white"
-                      : hasVisited
-                        ? "border-[#ece4d6] bg-[#3f6e61] text-white"
-                        : "border-[#ece4d6] bg-[#7d7d78] text-white"
+                    isSelected ? "scale-105 border-[#d94b35] bg-[#192234] text-white" : hasVisited ? "border-[#ece4d6] bg-[#3f6e61] text-white" : "border-[#ece4d6] bg-[#7d7d78] text-white"
                   }`}
                 >
                   {hasVisited ? <Check className="h-4 w-4" strokeWidth={2.5} /> : <span className="font-mono text-[10px]">{index + 1}</span>}
@@ -192,19 +156,7 @@ function RouteStrip({ state, visited, reducedMotion, onSelect }: RouteStripProps
   );
 }
 
-function MovingView({
-  direction,
-  tripId,
-  duration,
-  reducedMotion,
-  onComplete,
-}: {
-  direction: 1 | -1;
-  tripId: number;
-  duration: number;
-  reducedMotion: boolean;
-  onComplete: () => void;
-}) {
+function MovingView({ direction, tripId, duration, reducedMotion, onComplete }: { direction: 1 | -1; tripId: number; duration: number; reducedMotion: boolean; onComplete: () => void }) {
   return (
     <div className="absolute inset-0 overflow-hidden bg-[#101b2b]">
       <motion.div
@@ -239,7 +191,10 @@ function StationPlatform({ station, phase, onExplore }: { station: TrainStation;
 
   return (
     <div className="absolute inset-0 overflow-hidden bg-[#132033] text-[#f4efe6]">
-      <div className="absolute inset-0 opacity-45 [background-image:linear-gradient(rgba(255,255,255,0.055)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.055)_1px,transparent_1px)] [background-size:34px_34px]" aria-hidden="true" />
+      <div
+        className="absolute inset-0 opacity-45 [background-image:linear-gradient(rgba(255,255,255,0.055)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.055)_1px,transparent_1px)] [background-size:34px_34px]"
+        aria-hidden="true"
+      />
       <div className="absolute inset-x-0 top-0 h-2" style={{ backgroundColor: station.accent }} />
       <div className="absolute left-[8%] top-[15%] h-px w-[22%] bg-white/25" aria-hidden="true" />
       <div className="absolute right-[8%] top-[15%] h-px w-[22%] bg-white/25" aria-hidden="true" />
@@ -254,9 +209,7 @@ function StationPlatform({ station, phase, onExplore }: { station: TrainStation;
         <span className="mt-8 font-mono text-[10px] uppercase tracking-[0.22em]" style={{ color: station.accent }}>
           Night Shift stop {station.code.slice(-2)}
         </span>
-        <h2 className="mt-3 font-display text-[clamp(2.5rem,7vw,6rem)] font-semibold uppercase leading-[0.8] tracking-[-0.065em]">
-          {station.name}
-        </h2>
+        <h2 className="mt-3 font-display text-[clamp(2.5rem,7vw,6rem)] font-semibold uppercase leading-[0.8] tracking-[-0.065em]">{station.name}</h2>
         <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.16em] text-white/65 sm:text-xs">Mission: {station.objective}</p>
         <p className="mt-4 hidden max-w-lg text-sm leading-6 text-white/68 sm:block">{station.tagline}</p>
         <AnimatePresence mode="wait">
@@ -281,17 +234,7 @@ function StationPlatform({ station, phase, onExplore }: { station: TrainStation;
   );
 }
 
-function TrainDoor({
-  side,
-  state,
-  reducedMotion,
-  onDoorAnimationComplete,
-}: {
-  side: "left" | "right";
-  state: JourneyState;
-  reducedMotion: boolean;
-  onDoorAnimationComplete: () => void;
-}) {
+function TrainDoor({ side, state, reducedMotion, onDoorAnimationComplete }: { side: "left" | "right"; state: JourneyState; reducedMotion: boolean; onDoorAnimationComplete: () => void }) {
   const doorsClosed = state.phase === "boarding" || state.phase === "departing" || state.phase === "traveling";
   const openX = side === "left" ? "-94%" : "94%";
   const panelClass = "absolute bg-[#d9d3c7] shadow-[inset_0_0_0_1px_rgba(24,24,22,0.15)]";
@@ -312,7 +255,8 @@ function TrainDoor({
       <div className="absolute inset-x-[12%] bottom-[24%] top-[16%] border-4 border-[#77746e] bg-[#dbe4eb]/[0.06] shadow-[inset_0_0_24px_rgba(0,0,0,0.18)] sm:border-[6px]" />
       <div className={`absolute top-1/2 h-16 w-1.5 -translate-y-1/2 bg-[#a88243] ${side === "left" ? "right-5" : "left-5"}`} />
       <div className="absolute inset-x-[10%] bottom-[7%] flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.12em] text-black/55">
-        <span>Door {side === "left" ? "A" : "B"}</span><span>Stand clear</span>
+        <span>Door {side === "left" ? "A" : "B"}</span>
+        <span>Stand clear</span>
       </div>
     </motion.div>
   );
@@ -361,7 +305,9 @@ function PaperTicket({ visited, xp }: { visited: Set<StationId>; xp: number }) {
         </div>
         <div className="text-right">
           <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-black/55">Stops</p>
-          <p className="mt-1 font-display text-lg font-semibold">{visited.size} / {trainStations.length}</p>
+          <p className="mt-1 font-display text-lg font-semibold">
+            {visited.size} / {trainStations.length}
+          </p>
         </div>
       </div>
     </div>
@@ -396,10 +342,7 @@ export function GamifiedPortfolio({ projects, certifications, whatsappLink, onEx
   const distance = Math.abs(state.selectedIndex - state.currentIndex);
   const travelDuration = reducedMotion ? 0.08 : 0.82 + Math.min(distance, 3) * 0.08;
   const journeyLocked = state.phase !== "platform";
-  const xp = useMemo(
-    () => trainStations.reduce((score, station) => score + (visited.has(station.id) ? station.xp : 0), 0),
-    [visited],
-  );
+  const xp = useMemo(() => trainStations.reduce((score, station) => score + (visited.has(station.id) ? station.xp : 0), 0), [visited]);
   const rank = xp === TOTAL_XP ? "Line Master" : xp >= 40 ? "Signal Operator" : "Observer";
   const overlayOpen = showTicket || showCompletion;
   const baseInert = state.phase === "exploring" || overlayOpen;
@@ -438,10 +381,13 @@ export function GamifiedPortfolio({ projects, certifications, whatsappLink, onEx
     dispatch({ type: "DEPART" });
   }, [exploreCurrentStation, state.currentIndex, state.phase, state.selectedIndex]);
 
-  const moveSelection = useCallback((step: 1 | -1) => {
-    if (state.phase !== "platform") return;
-    selectStation(Math.min(trainStations.length - 1, Math.max(0, state.selectedIndex + step)));
-  }, [selectStation, state.phase, state.selectedIndex]);
+  const moveSelection = useCallback(
+    (step: 1 | -1) => {
+      if (state.phase !== "platform") return;
+      selectStation(Math.min(trainStations.length - 1, Math.max(0, state.selectedIndex + step)));
+    },
+    [selectStation, state.phase, state.selectedIndex],
+  );
 
   const closeTicket = useCallback(() => {
     setShowTicket(false);
@@ -491,24 +437,25 @@ export function GamifiedPortfolio({ projects, certifications, whatsappLink, onEx
       // The completion moment still works without storage.
     }
 
-    const completionTimer = window.setTimeout(() => {
-      completionQueuedRef.current = true;
-      setShowCompletion(true);
-      try {
-        window.sessionStorage.setItem("rafael-line-completion-seen", "true");
-      } catch {
-        // No persistent acknowledgement when storage is unavailable.
-      }
-    }, reducedMotion ? 0 : 650);
+    const completionTimer = window.setTimeout(
+      () => {
+        completionQueuedRef.current = true;
+        setShowCompletion(true);
+        try {
+          window.sessionStorage.setItem("rafael-line-completion-seen", "true");
+        } catch {
+          // No persistent acknowledgement when storage is unavailable.
+        }
+      },
+      reducedMotion ? 0 : 650,
+    );
 
     return () => window.clearTimeout(completionTimer);
   }, [reducedMotion, visited.size]);
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === "Tab") {
-      const focusable = Array.from(rootRef.current?.querySelectorAll<HTMLElement>("button:not([disabled]), a[href]") ?? []).filter(
-        (element) => element.offsetParent !== null && !element.closest("[inert]"),
-      );
+      const focusable = Array.from(rootRef.current?.querySelectorAll<HTMLElement>("button:not([disabled]), a[href]") ?? []).filter((element) => element.offsetParent !== null && !element.closest("[inert]"));
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
       if (!first || !last) return;
@@ -591,7 +538,9 @@ export function GamifiedPortfolio({ projects, certifications, whatsappLink, onEx
             <div className="flex min-w-0 items-center gap-3">
               <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-sm bg-[#d94b35] font-mono text-xs font-bold tracking-[-0.04em] text-white shadow-[0_0_0_1px_rgba(255,255,255,0.15)]">REK</span>
               <div className="min-w-0">
-                <p className="truncate font-display text-sm font-semibold uppercase tracking-[0.03em] sm:text-base">Rafael Line <span className="text-[#f2d99c]">Night Shift</span></p>
+                <p className="truncate font-display text-sm font-semibold uppercase tracking-[0.03em] sm:text-base">
+                  Rafael Line <span className="text-[#f2d99c]">Night Shift</span>
+                </p>
                 <p className="mt-0.5 hidden font-mono text-[10px] uppercase tracking-[0.14em] text-white/58 sm:block">Operator session / Yogyakarta / 07.7697° S</p>
               </div>
             </div>
@@ -599,7 +548,10 @@ export function GamifiedPortfolio({ projects, certifications, whatsappLink, onEx
             <div className="flex shrink-0 items-center gap-2">
               <div className="hidden w-52 lg:block">
                 <div className="mb-1 flex items-center justify-between gap-3 font-mono text-[10px] uppercase tracking-[0.12em] text-white/62">
-                  <span>{rank}</span><span>{xp}/{TOTAL_XP} XP</span>
+                  <span>{rank}</span>
+                  <span>
+                    {xp}/{TOTAL_XP} XP
+                  </span>
                 </div>
                 <div className="h-1.5 overflow-hidden rounded-full bg-white/12">
                   <motion.div className="h-full origin-left rounded-full bg-[#f2d99c]" initial={false} animate={{ scaleX: xp / TOTAL_XP }} />
@@ -612,7 +564,11 @@ export function GamifiedPortfolio({ projects, certifications, whatsappLink, onEx
                 aria-label={`Open journey pass, ${visited.size} of ${trainStations.length} stops cleared`}
                 className="flex h-10 items-center gap-2 rounded-sm border border-white/18 px-3 font-mono text-[10px] uppercase tracking-[0.12em] transition-colors hover:bg-white/8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f2d99c]"
               >
-                <Ticket className="h-4 w-4 text-[#f2d99c]" /><span className="hidden sm:inline">Pass</span><span>{visited.size}/{trainStations.length}</span>
+                <Ticket className="h-4 w-4 text-[#f2d99c]" />
+                <span className="hidden sm:inline">Pass</span>
+                <span>
+                  {visited.size}/{trainStations.length}
+                </span>
               </button>
               <button
                 type="button"
@@ -622,7 +578,9 @@ export function GamifiedPortfolio({ projects, certifications, whatsappLink, onEx
                 onClick={onExit}
                 className="flex h-10 items-center gap-2 rounded-sm border border-white/18 px-3 text-[10px] font-semibold uppercase tracking-[0.12em] transition-colors hover:bg-white/8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d94b35]"
               >
-                <Gamepad2 className="h-4 w-4 text-[#d94b35]" /><span className="hidden lg:inline">Exit mode</span><X className="h-3.5 w-3.5" />
+                <Gamepad2 className="h-4 w-4 text-[#d94b35]" />
+                <span className="hidden lg:inline">Exit mode</span>
+                <X className="h-3.5 w-3.5" />
               </button>
             </div>
           </div>
@@ -646,7 +604,9 @@ export function GamifiedPortfolio({ projects, certifications, whatsappLink, onEx
           <div className="relative mx-auto h-full max-w-7xl overflow-hidden rounded-[3px] border-[6px] border-[#303640] bg-[#101b2b] shadow-[0_18px_46px_rgba(24,24,22,0.24)] [contain:layout_paint] sm:border-[9px]">
             <div className="absolute inset-x-0 top-0 z-30 flex h-9 items-center justify-between border-b border-black/30 bg-[#c9c5bc] px-4 font-mono text-[10px] uppercase tracking-[0.12em] text-black/58">
               <span>Cab REK-26</span>
-              <span className="flex items-center gap-1.5"><MapPin className="h-3 w-3" /> Yogyakarta</span>
+              <span className="flex items-center gap-1.5">
+                <MapPin className="h-3 w-3" /> Yogyakarta
+              </span>
               <span className="hidden sm:inline">Signal desk online</span>
             </div>
 
@@ -697,7 +657,8 @@ export function GamifiedPortfolio({ projects, certifications, whatsappLink, onEx
               aria-label="Select previous stop"
               className="flex h-12 items-center justify-center rounded-sm border border-black/18 px-3 text-[10px] font-semibold uppercase tracking-[0.12em] transition-colors hover:bg-black/5 disabled:cursor-not-allowed disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d94b35] sm:gap-2"
             >
-              <ChevronLeft className="h-4 w-4" /><span className="hidden sm:inline">Previous</span>
+              <ChevronLeft className="h-4 w-4" />
+              <span className="hidden sm:inline">Previous</span>
             </button>
 
             <div className="grid min-w-0 items-center gap-3 sm:grid-cols-[1fr_auto]">
@@ -732,13 +693,18 @@ export function GamifiedPortfolio({ projects, certifications, whatsappLink, onEx
               aria-label="Select next stop"
               className="flex h-12 items-center justify-center rounded-sm border border-black/18 px-3 text-[10px] font-semibold uppercase tracking-[0.12em] transition-colors hover:bg-black/5 disabled:cursor-not-allowed disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d94b35] sm:gap-2"
             >
-              <span className="hidden sm:inline">Next</span><ChevronRight className="h-4 w-4" />
+              <span className="hidden sm:inline">Next</span>
+              <ChevronRight className="h-4 w-4" />
             </button>
           </div>
           <div data-helper className="mx-auto mt-2 hidden max-w-7xl items-center justify-between font-mono text-[10px] uppercase tracking-[0.1em] text-black/52 lg:flex">
-            <span className="flex items-center gap-2"><ArrowLeft className="h-3 w-3" /> Arrows select stops</span>
+            <span className="flex items-center gap-2">
+              <ArrowLeft className="h-3 w-3" /> Arrows select stops
+            </span>
             <span>{currentStation.announcement}</span>
-            <span className="flex items-center gap-2">Enter dispatches <ArrowRight className="h-3 w-3" /></span>
+            <span className="flex items-center gap-2">
+              Enter dispatches <ArrowRight className="h-3 w-3" />
+            </span>
           </div>
         </div>
       </div>
@@ -758,11 +724,11 @@ export function GamifiedPortfolio({ projects, certifications, whatsappLink, onEx
                   <span className="h-2 w-2 rounded-full bg-[#d94b35]" /> Operator call 07.7697
                 </div>
                 <h2 className="mt-5 font-display text-[clamp(3.4rem,9vw,7.8rem)] font-semibold uppercase leading-[0.76] tracking-[-0.07em]">
-                  Run the<br /><span className="text-[#d94b35]">Night Shift.</span>
+                  Run the
+                  <br />
+                  <span className="text-[#d94b35]">Night Shift</span>
                 </h2>
-                <p className="mt-6 max-w-xl text-sm leading-7 text-white/70 sm:text-base">
-                  Take control of Rafael Line. Clear five stops, route real projects through the signal board, and certify the journey with 100 signal XP.
-                </p>
+                <p className="mt-6 max-w-xl text-sm leading-7 text-white/70 sm:text-base">Take control of Rafael Line. Clear five stops, route real projects through the signal board, and certify the journey with 100 signal XP.</p>
                 <div className="mt-6 grid max-w-xl gap-2 sm:grid-cols-3">
                   {[
                     ["01", "Choose a stop"],
@@ -786,7 +752,11 @@ export function GamifiedPortfolio({ projects, certifications, whatsappLink, onEx
                   onClick={() => dispatch({ type: "BOARD" })}
                   className="group mt-4 flex min-h-14 w-full items-center justify-between rounded-sm bg-[#d94b35] px-5 text-xs font-semibold uppercase tracking-[0.15em] text-white transition-colors hover:bg-[#bd3d2a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f2d99c] focus-visible:ring-offset-3 focus-visible:ring-offset-[#111d30]"
                 >
-                  Validate pass &amp; begin <span className="flex items-center gap-2"><TrainFront className="h-5 w-5" /><ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" /></span>
+                  Validate pass &amp; begin{" "}
+                  <span className="flex items-center gap-2">
+                    <TrainFront className="h-5 w-5" />
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </span>
                 </button>
                 <p className="mt-3 text-center font-mono text-[10px] uppercase tracking-[0.1em] text-white/52">No sound · Keyboard ready · Progress saved for this session</p>
               </div>
@@ -822,18 +792,14 @@ export function GamifiedPortfolio({ projects, certifications, whatsappLink, onEx
                 aria-label={`Continue the journey from ${currentStation.name}`}
                 className="flex h-10 shrink-0 items-center gap-2 rounded-sm border border-black/18 px-3 text-[10px] font-semibold uppercase tracking-[0.11em] transition-colors hover:bg-black/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d94b35]"
               >
-                <TrainFront className="h-4 w-4" /><span className="hidden sm:inline">Continue journey</span><ArrowRight className="h-3.5 w-3.5 sm:hidden" />
+                <TrainFront className="h-4 w-4" />
+                <span className="hidden sm:inline">Continue journey</span>
+                <ArrowRight className="h-3.5 w-3.5 sm:hidden" />
               </button>
             </div>
             <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 py-7 [touch-action:pan-y] sm:px-7 md:px-10 md:py-9">
               <div className="mx-auto max-w-7xl">
-                <StationContent
-                  station={currentStation}
-                  projects={projects}
-                  certifications={certifications}
-                  whatsappLink={whatsappLink}
-                  onEnterArchive={onEnterArchive}
-                />
+                <StationContent station={currentStation} projects={projects} certifications={certifications} whatsappLink={whatsappLink} onEnterArchive={onEnterArchive} />
               </div>
             </div>
           </motion.section>
@@ -849,7 +815,9 @@ export function GamifiedPortfolio({ projects, certifications, whatsappLink, onEx
             exit={{ opacity: 0, y: reducedMotion ? 0 : -8 }}
             className="pointer-events-none absolute bottom-5 left-1/2 z-[78] flex w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 items-center gap-3 rounded-sm border border-white/12 bg-[#111d30] p-3 text-[#f4efe6] shadow-[0_18px_50px_rgba(0,0,0,0.3)] sm:bottom-7"
           >
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-white" style={{ backgroundColor: stampEarned.accent }}><Check className="h-5 w-5" /></span>
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-white" style={{ backgroundColor: stampEarned.accent }}>
+              <Check className="h-5 w-5" />
+            </span>
             <div>
               <p className="font-mono text-[10px] uppercase tracking-[0.13em] text-[#f2d99c]">Stamp secured · +{stampEarned.xp} XP</p>
               <p className="mt-1 font-display text-base font-semibold">{stampEarned.name} cleared</p>
@@ -875,7 +843,15 @@ export function GamifiedPortfolio({ projects, certifications, whatsappLink, onEx
                   <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#f2d99c]">Current rank</p>
                   <p className="mt-1 font-display text-xl font-semibold">{rank}</p>
                 </div>
-                <button type="button" autoFocus onClick={closeTicket} aria-label="Close journey pass" className="flex h-10 items-center gap-2 rounded-sm border border-white/20 px-3 text-[10px] font-semibold uppercase tracking-[0.12em] hover:bg-white/8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f2d99c]">Close <X className="h-4 w-4" /></button>
+                <button
+                  type="button"
+                  autoFocus
+                  onClick={closeTicket}
+                  aria-label="Close journey pass"
+                  className="flex h-10 items-center gap-2 rounded-sm border border-white/20 px-3 text-[10px] font-semibold uppercase tracking-[0.12em] hover:bg-white/8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f2d99c]"
+                >
+                  Close <X className="h-4 w-4" />
+                </button>
               </div>
               <PaperTicket visited={visited} xp={xp} />
             </motion.div>
@@ -900,16 +876,34 @@ export function GamifiedPortfolio({ projects, certifications, whatsappLink, onEx
               exit={{ y: reducedMotion ? 0 : 18, opacity: 0 }}
               className="relative w-full max-w-2xl overflow-hidden rounded-sm border border-[#f2d99c]/35 bg-[#17253a] p-6 text-center text-[#f4efe6] shadow-[0_30px_90px_rgba(0,0,0,0.42)] sm:p-10"
             >
-              <div className="absolute inset-0 opacity-35 [background-image:linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:28px_28px]" aria-hidden="true" />
+              <div
+                className="absolute inset-0 opacity-35 [background-image:linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:28px_28px]"
+                aria-hidden="true"
+              />
               <div className="relative">
-                <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#f2d99c] text-[#17253a] shadow-[0_0_0_8px_rgba(242,217,156,0.08)]"><Trophy className="h-7 w-7" /></span>
+                <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#f2d99c] text-[#17253a] shadow-[0_0_0_8px_rgba(242,217,156,0.08)]">
+                  <Trophy className="h-7 w-7" />
+                </span>
                 <p className="mt-6 font-mono text-[10px] uppercase tracking-[0.2em] text-[#f2d99c]">Operator achievement unlocked</p>
-                <h2 id="route-complete-title" className="mt-3 font-display text-[clamp(2.7rem,8vw,5.5rem)] font-semibold uppercase leading-[0.82] tracking-[-0.055em]">Route<br />certified.</h2>
+                <h2 id="route-complete-title" className="mt-3 font-display text-[clamp(2.7rem,8vw,5.5rem)] font-semibold uppercase leading-[0.82] tracking-[-0.055em]">
+                  Route
+                  <br />
+                  certified.
+                </h2>
                 <p className="mx-auto mt-5 max-w-md text-sm leading-7 text-white/70 sm:text-base">You cleared every stop, inspected Rafael&apos;s operating system, and earned all {TOTAL_XP} signal XP.</p>
                 <div className="mx-auto mt-7 grid max-w-md grid-cols-3 border-y border-white/14 py-4">
-                  <div><strong className="block font-display text-2xl">05</strong><span className="font-mono text-[10px] uppercase tracking-[0.1em] text-white/58">Stops</span></div>
-                  <div className="border-x border-white/14"><strong className="block font-display text-2xl">{TOTAL_XP}</strong><span className="font-mono text-[10px] uppercase tracking-[0.1em] text-white/58">Signal XP</span></div>
-                  <div><strong className="block font-display text-2xl">A</strong><span className="font-mono text-[10px] uppercase tracking-[0.1em] text-white/58">Rank</span></div>
+                  <div>
+                    <strong className="block font-display text-2xl">05</strong>
+                    <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-white/58">Stops</span>
+                  </div>
+                  <div className="border-x border-white/14">
+                    <strong className="block font-display text-2xl">{TOTAL_XP}</strong>
+                    <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-white/58">Signal XP</span>
+                  </div>
+                  <div>
+                    <strong className="block font-display text-2xl">A</strong>
+                    <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-white/58">Rank</span>
+                  </div>
                 </div>
                 <button
                   type="button"
@@ -932,7 +926,9 @@ export function GamifiedPortfolio({ projects, certifications, whatsappLink, onEx
         </div>
       </div>
 
-      <p className="sr-only" aria-live="polite">{statusCopy}. {state.phase === "platform" ? currentStation.announcement : ""}</p>
+      <p className="sr-only" aria-live="polite">
+        {statusCopy}. {state.phase === "platform" ? currentStation.announcement : ""}
+      </p>
     </motion.div>
   );
 }
