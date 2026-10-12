@@ -4,6 +4,7 @@ A highly interactive and immersive 3D developer portfolio built to showcase prof
 
 ## Key Features
 
+*   **2D Pixel Game Mode — The Journey**: A lazy-loaded Phaser game based on `Revs_Portfolio_GDD.md`. Walk around Yogyakarta Station, board a train, and explore five connected carriages: About, Projects, Experience, Skills, and Contact. Includes collision, A* click/tap navigation, optional touch controls, accessible React detail dialogs, and opt-in synthesized audio.
 *   **Interactive 3D Environment**: Powered by Three.js and React Three Fiber, the portfolio features an exploratory 3D room with dynamic lighting, shadows, and camera controls.
 *   **Custom PDF Engine**: A bespoke dual-page book spread reader built on top of `react-pdf`. It supports seamless contiguous reading across multiple documents, dynamic pagination, and high-performance caching.
 *   **Immersive Transitions**: Silky smooth animations and route transitions powered by Framer Motion, connecting standard 2D web interfaces with the 3D WebGL canvas.
@@ -17,6 +18,7 @@ A highly interactive and immersive 3D developer portfolio built to showcase prof
 *   **Language**: TypeScript
 *   **Styling**: Tailwind CSS
 *   **3D Rendering**: Three.js, React Three Fiber, React Three Drei
+*   **2D Game**: Phaser 3 Arcade Physics
 *   **Animations**: Framer Motion
 *   **PDF Rendering**: react-pdf
 *   **Icons**: Lucide React, React Icons
@@ -25,6 +27,9 @@ A highly interactive and immersive 3D developer portfolio built to showcase prof
 
 *   `/app`: Next.js App Router configuration and main pages.
 *   `/components/archive`: Core 3D components, Bookshelf logic, and the Book Spread PDF engine.
+*   `/components/gamified/pixel`: Pixel world maps, navigation, Phaser scenes, generated textures, audio, detail dialogs, and game styles.
+*   `/lib/portfolioJourney.ts`: Shared education, experience, and skill content for Game Mode and the regular website.
+*   `/public/game`: Generated pixel landscape and its generation prompt.
 *   `/components/entrance`: 3D transition components bridging the 2D interface and the 3D archive.
 *   `/components/ui`: Reusable UI components and theme controllers.
 *   `/lib`: Application utilities, configurations, and the `archiveBooks.ts` data structure.

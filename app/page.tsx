@@ -11,25 +11,22 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ArchiveEntranceTransition } from "@/components/archive/ArchiveEntranceTransition";
 import { Entrance } from "@/components/entrance/Entrance";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { PortfolioBackground } from "@/components/PortfolioBackground";
 
 const GamifiedPortfolio = dynamic(
   () => import("@/components/gamified/GamifiedPortfolio").then((module) => module.GamifiedPortfolio),
   {
     ssr: false,
     loading: () => (
-      <div className="fixed inset-0 z-[90] flex items-center justify-center bg-[#15202b] text-[#eeeae0]" role="status" aria-label="Preparing Rafael Line">
+      <div className="fixed inset-0 z-[90] flex items-center justify-center bg-[#302b42] text-[#f6e9cd]" role="status" aria-label="Preparing Rafael Line">
         <div className="border border-white/15 px-6 py-5 text-center">
           <p className="font-mono text-[8px] uppercase tracking-[0.25em] text-[#f2d99c]">REK Line / Yogyakarta</p>
-          <p className="mt-3 font-display text-lg font-semibold uppercase tracking-[0.08em]">Preparing the Night Shift…</p>
+          <p className="mt-3 font-display text-lg font-semibold uppercase tracking-[0.08em]">Preparing the Journey…</p>
         </div>
       </div>
     ),
   },
 );
-
-const preloadGamifiedPortfolio = () => {
-  void import("@/components/gamified/GamifiedPortfolio");
-};
 
 const projects = [
   {
@@ -383,15 +380,12 @@ export default function Home() {
                 type="button"
                 role="switch"
                 aria-checked={isGameMode}
-                aria-label="Enter Rafael Line Night Shift mode"
-                onPointerEnter={preloadGamifiedPortfolio}
-                onPointerDown={preloadGamifiedPortfolio}
-                onFocus={preloadGamifiedPortfolio}
+                aria-label="Enter 2D pixel Game Mode"
                 onClick={enterGameMode}
-                className="group mr-1 flex h-9 items-center gap-2 border border-black/12 px-2 text-[8px] font-semibold uppercase tracking-[0.14em] transition-colors hover:border-[#d94b35]/55 hover:bg-[#d94b35]/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d94b35] dark:border-white/15 dark:hover:bg-white/5 sm:px-2.5"
+                className="group mr-1 flex min-h-11 items-center gap-2 border border-black/12 px-2 text-[8px] font-semibold uppercase tracking-[0.14em] transition-colors hover:border-[#d94b35]/55 hover:bg-[#d94b35]/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d94b35] dark:border-white/15 dark:hover:bg-white/5 sm:px-2.5"
               >
                 <Gamepad2 className="h-4 w-4 text-[#d94b35]" />
-                <span className="hidden xl:inline">Night Shift</span>
+                <span className="hidden xl:inline">Game Mode</span>
                 <span className="relative h-4 w-7 bg-black/12 transition-colors group-hover:bg-black/20 dark:bg-white/15 dark:group-hover:bg-white/25">
                   <span className="absolute left-0.5 top-0.5 h-3 w-3 bg-[#181816] transition-transform dark:bg-[#eeeae0]" />
                 </span>
@@ -536,6 +530,8 @@ export default function Home() {
             )}
           </motion.div>
         </div>
+
+        <PortfolioBackground />
 
         {/* Selected works */}
         <section id="projects" className="relative z-10 px-6 py-28 lg:px-10 lg:py-40">

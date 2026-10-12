@@ -1,0 +1,9 @@
+# Journey pixel assets
+
+`countryside.webp` is the runtime panorama (720 × 240, 54 KB). `countryside.png` retains the original generated image. The panorama loads only after Game Mode opens. Characters, tiles, and furnishings are generated on a 16-pixel grid by `components/gamified/pixel/pixelAssets.ts`, so animation frames and collision scale remain consistent.
+
+Train interiors bake the panorama into their window panes rather than drawing it behind the entire world. Five opaque, cached 384 × 280 carriage bitmaps include detailed wood planks, wall trim, woven carpets, and static shading. A shared 64 × 64 connector closes the passages. No extra raster downloads or graphics dependencies are needed; the new texture budget is about 2.1 MiB of raw RGBA pixels.
+
+The panorama was generated with the built-in ImageGen tool, then exported as a smaller nearest-neighbor WebP for delivery. Final generation prompt:
+
+> Use case: stylized-concept. Asset type: seamless wide background panorama for a 2D top-down pixel railway portfolio game. Primary request: create a warm, peaceful Indonesian countryside railway-window landscape at golden dusk, 16-bit pixel art, with distant blue-green mountains, small terracotta-roof houses, rice fields, banana trees and telegraph poles. Composition: horizontal panoramic 3:1 composition, unobstructed landscape, no train or characters; distant sky fills upper half, fields lower half, repeatable edges with no dramatic feature at the ends. Style: authentic crisp coarse pixel art at a visually 320x110 pixel grid enlarged with nearest-neighbor, clean pixel clusters, limited palette, no blur, no painted strokes, no anti-aliasing, no text or logos. Palette: dusky plum #302b42, warm cream #f6dfb1, terracotta #b96547, moss #536653, teal #426666, gold #eebd76. Intended to be sampled into a low-resolution repeating window texture.
