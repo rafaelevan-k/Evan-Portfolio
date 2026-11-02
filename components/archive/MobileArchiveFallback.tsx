@@ -1,99 +1,121 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { ArrowLeft, Book, ShieldCheck, Trophy, Users, ChevronRight, Info, X } from "lucide-react";
+import { ArrowLeft, Download } from "lucide-react";
 import dynamic from "next/dynamic";
-import type { BookCategory } from "@/lib/archiveBooks";
+import { archiveBooks, type BookCategory } from "@/lib/archiveBooks";
+import { archiveSerif } from "./archiveFont";
+import { HERO_BOOKS } from "./shelfLayout";
 
 const BookSpreadReader = dynamic(() => import("@/components/archive/BookSpreadReader").then(mod => mod.BookSpreadReader), {
   ssr: false,
 });
 
+// A pile of books lying flat: uneven widths and offsets, with the CV on top
+const BOOK_PILE: { type: BookCategory; width: string; offset: string; ink: string }[] = [
+  { type: "cv", width: "94%", offset: "2%", ink: "#f6e3a6" },
+  { type: "certifications", width: "100%", offset: "0%", ink: "#f6e3a6" },
+  { type: "volunteer", width: "91%", offset: "6%", ink: "#241603" },
+  { type: "awards", width: "97%", offset: "1%", ink: "#f6e3a6" },
+];
+
+const LINK_CLASS =
+  "inline-flex items-center gap-2 min-h-11 px-4 rounded-full border border-[#c6a75f]/40 text-sm text-[#f0e6d0] active:bg-white/10 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e5c158]";
+
 export function MobileArchiveFallback() {
   const [activeCategory, setActiveCategory] = useState<BookCategory | null>(null);
-  const [showAlert, setShowAlert] = useState(true);
+  const bookButtonsRef = useRef<Partial<Record<BookCategory, HTMLButtonElement | null>>>({});
 
-  const categories: { id: BookCategory; label: string; icon: any; color: string }[] = [
-    { id: "cv", label: "Curriculum Vitae", icon: Book, color: "bg-red-500" },
-    { id: "certifications", label: "Certifications", icon: ShieldCheck, color: "bg-blue-500" },
-    { id: "volunteer", label: "Volunteer & Org", icon: Users, color: "bg-yellow-500" },
-    { id: "awards", label: "Awards", icon: Trophy, color: "bg-green-500" },
-  ];
+  const closeBook = () => {
+    if (activeCategory) bookButtonsRef.current[activeCategory]?.focus();
+    setActiveCategory(null);
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== "Escape" || !activeCategory) return;
+      bookButtonsRef.current[activeCategory]?.focus();
+      setActiveCategory(null);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [activeCategory]);
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white p-6 relative overflow-hidden">
-      {/* Subtle stylized gradient background to mimic the 3D room's lighting */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-900/20 via-[#050505] to-[#050505]" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-orange-900/10 via-transparent to-transparent" />
+    <main className="relative min-h-dvh overflow-hidden bg-[#1c2a23] text-[#f0e6d0] flex flex-col">
+      {/* Lamp light falling on the wall, as in the 3D room */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_90%_55%_at_10%_12%,_rgba(255,190,120,0.26),_transparent_70%)]" />
 
-      <div className="relative z-10">
-        <header className="mb-12 pt-6">
-          <Link href="/" className="inline-flex items-center gap-2 text-white/50 text-sm font-medium hover:text-white transition-colors mb-6 uppercase tracking-widest">
-            <ArrowLeft className="w-4 h-4" /> Return Home
+      <div className="relative flex flex-1 flex-col px-4 pt-4 pb-6 max-w-xl w-full mx-auto">
+        <nav className="flex items-center justify-between gap-3">
+          <Link href="/" className={LINK_CLASS}>
+            <ArrowLeft className="w-4 h-4" />
+            Return
           </Link>
-          <h1 className="font-display text-4xl font-bold tracking-tight mb-2">The Archive</h1>
-          <p className="text-white/50">A collection of my journey and documents.</p>
+          <a href={archiveBooks.cv.documents[0].path} download className={LINK_CLASS}>
+            <Download className="w-4 h-4" />
+            Download CV
+          </a>
+        </nav>
+
+        <header className="mt-10 mb-8">
+          <h1 className={`${archiveSerif.className} text-4xl`}>The Archive</h1>
+          <p className="mt-2 text-[#d9cfb8]">A collection of my journey. Choose a book to open it.</p>
         </header>
 
-        <AnimatePresence>
-          {showAlert && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="mb-8 p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-start gap-4 backdrop-blur-md relative"
-            >
-              <div className="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center shrink-0">
-                <Info className="w-4 h-4 text-indigo-400" />
-              </div>
-              <div className="flex-1 pr-6">
-                <h3 className="text-indigo-300 font-medium text-sm mb-1">Desktop Experience Available</h3>
-                <p className="text-white/60 text-xs leading-relaxed">
-                  The full 3D interactive archive room is exclusively available on desktop devices. You are currently viewing the simplified mobile layout.
-                </p>
-              </div>
-              <button 
-                onClick={() => setShowAlert(false)}
-                className="absolute top-4 right-4 text-white/40 hover:text-white transition-colors"
-                aria-label="Close alert"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* The pile rests on a shelf at the bottom of the screen */}
+        <div className="mt-auto">
+          <ul className="flex flex-col gap-[3px]">
+            {BOOK_PILE.map(({ type, width, offset, ink }) => {
+              const book = archiveBooks[type];
+              const count = book.documents.length;
+              const color = HERO_BOOKS.find((hero) => hero.type === type)?.color;
 
-        <div className="space-y-4">
-          {categories.map((cat) => (
-            <motion.div
-              key={cat.id}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => setActiveCategory(cat.id === activeCategory ? null : cat.id)}
-              className={`p-5 rounded-2xl border ${activeCategory === cat.id ? 'border-white/30 bg-white/10' : 'border-white/10 bg-white/5'} flex items-center justify-between cursor-pointer transition-colors backdrop-blur-md`}
-            >
-              <div className="flex items-center gap-4">
-                <div className={`w-10 h-10 rounded-full ${cat.color} bg-opacity-20 flex items-center justify-center`}>
-                  <cat.icon className={`w-5 h-5 text-white`} />
-                </div>
-                <span className="font-medium text-lg">{cat.label}</span>
-              </div>
-              <ChevronRight className={`w-5 h-5 text-white/50 transition-transform ${activeCategory === cat.id ? 'rotate-90' : ''}`} />
-            </motion.div>
-          ))}
+              return (
+                <li key={type} style={{ width, marginLeft: offset }}>
+                  <button
+                    ref={(button) => {
+                      bookButtonsRef.current[type] = button;
+                    }}
+                    onClick={() => setActiveCategory(type)}
+                    style={{ backgroundColor: color, color: ink }}
+                    className="relative w-full min-h-[76px] rounded-[3px] px-6 py-3 text-left shadow-[0_3px_5px_rgba(0,0,0,0.45)] active:translate-x-1.5 transition-transform focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e5c158]"
+                  >
+                    {/* Rounded spine: light along the top edge, shadow along the bottom, clear of the text */}
+                    <span className="pointer-events-none absolute inset-0 rounded-[3px] bg-[linear-gradient(to_bottom,_rgba(255,255,255,0.2),_transparent_16%,_transparent_82%,_rgba(0,0,0,0.35))]" />
+                    {/* Gold bands near each end of the spine */}
+                    <span className="pointer-events-none absolute inset-y-0 left-2.5 w-[3px] border-x border-current opacity-60" />
+                    <span className="pointer-events-none absolute inset-y-0 right-2.5 w-[3px] border-x border-current opacity-60" />
+                    <span className={`${archiveSerif.className} relative block text-xl leading-tight`}>{book.title}</span>
+                    <span className="relative mt-0.5 block text-sm">
+                      {count} {count === 1 ? "document" : "documents"}
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+
+          {/* Walnut shelf board */}
+          <div
+            aria-hidden="true"
+            className="h-4 -mx-4 mt-[3px] bg-[#5a3a26] bg-[url('/archive_wood_wall.webp')] bg-cover bg-blend-soft-light shadow-[0_8px_14px_rgba(0,0,0,0.5)]"
+          />
+          <p className="mt-6 text-sm text-[#d9cfb8]">On a larger screen, these books sit on a shelf in a 3D room.</p>
         </div>
-
-        {/* 2D UI Overlay: The PDF Book Spread */}
-        <AnimatePresence>
-          {activeCategory && (
-            <BookSpreadReader 
-              selectedBook={activeCategory} 
-              onClose={() => setActiveCategory(null)} 
-            />
-          )}
-        </AnimatePresence>
       </div>
-    </div>
+
+      {/* 2D UI Overlay: The PDF Book Spread */}
+      <AnimatePresence>
+        {activeCategory && (
+          <BookSpreadReader
+            selectedBook={activeCategory}
+            onClose={closeBook}
+          />
+        )}
+      </AnimatePresence>
+    </main>
   );
 }
