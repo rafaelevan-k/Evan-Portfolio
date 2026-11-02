@@ -31,23 +31,29 @@ function InitialShadowPass() {
   return null;
 }
 
+function configureRepeatingTexture(texture: THREE.Texture, repeat: number) {
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+  texture.repeat.set(repeat, repeat);
+  texture.colorSpace = THREE.SRGBColorSpace;
+}
+
+// Module-level so useTexture's load effect doesn't re-run on every render
+const configureWoodTexture = (texture: THREE.Texture | THREE.Texture[]) => {
+  if (!Array.isArray(texture)) configureRepeatingTexture(texture, 2);
+};
+
+const configureFloorTexture = (texture: THREE.Texture | THREE.Texture[]) => {
+  if (Array.isArray(texture)) return;
+  configureRepeatingTexture(texture, 4);
+  texture.anisotropy = 8;
+};
+
 // Inner wrapper component to run inside the Suspense boundary so texture loading works
 function ArchiveContent({ selectedBook, setSelectedBook, focusedBook, onBookOpened }: ArchiveSceneProps) {
   // Load optimized WebP wood and floor textures
-  const woodTexture = useTexture("/archive_wood_wall.webp");
-  const floorTexture = useTexture("/archive_wood_floor.webp");
-
-  // Configure texture wrap and repeating synchronously before materials are constructed
-  woodTexture.wrapS = THREE.RepeatWrapping;
-  woodTexture.wrapT = THREE.RepeatWrapping;
-  woodTexture.repeat.set(2, 2);
-  woodTexture.colorSpace = THREE.SRGBColorSpace;
-
-  floorTexture.wrapS = THREE.RepeatWrapping;
-  floorTexture.wrapT = THREE.RepeatWrapping;
-  floorTexture.repeat.set(4, 4);
-  floorTexture.colorSpace = THREE.SRGBColorSpace;
-  floorTexture.anisotropy = 8;
+  const woodTexture = useTexture("/archive_wood_wall.webp", configureWoodTexture);
+  const floorTexture = useTexture("/archive_wood_floor.webp", configureFloorTexture);
 
   // Construct shared MeshStandardMaterials for wood and floor to save draw calls
   // Each texture doubles as its own bump map, so the grain catches the lamp light

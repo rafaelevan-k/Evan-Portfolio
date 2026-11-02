@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, useRef } from "react";
+import { createPortal } from "react-dom";
 import { motion, useReducedMotion } from "framer-motion";
 import { X, Loader2, Download, List } from "lucide-react";
 import { Document, Page, pdfjs } from "react-pdf";
@@ -12,8 +13,8 @@ import { HERO_BOOKS } from "./shelfLayout";
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 
-// Safely setup pdf.worker.min.js via unpkg CDN to avoid webpack build issues
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+// Bundled with the app, so the reader doesn't depend on a CDN and always matches the installed pdfjs
+pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.mjs", import.meta.url).toString();
 
 interface BookSpreadReaderProps {
   selectedBook: BookCategory;
@@ -47,6 +48,9 @@ export function BookSpreadReader({ selectedBook, onClose, visible = true }: Book
   const [docPages, setDocPages] = useState<Record<number, boolean[]>>({});
   const [turn, setTurn] = useState<{ id: number; forward: boolean } | null>(null);
   const [isContentsOpen, setIsContentsOpen] = useState(false);
+  // Where the visible pages render; they portal in from each document's single persistent <Document>
+  const [leftSlot, setLeftSlot] = useState<HTMLDivElement | null>(null);
+  const [rightSlot, setRightSlot] = useState<HTMLDivElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const reduceMotion = useReducedMotion();
 
@@ -131,17 +135,7 @@ export function BookSpreadReader({ selectedBook, onClose, visible = true }: Book
     return () => window.removeEventListener("keydown", handleKeyDown);
   });
 
-  const renderPage = (page: PageRef, width: number) => (
-    <Document key={`${page.docIndex}-${page.pdfPage}`} file={bookConfig.documents[page.docIndex].path} loading={null}>
-      <Page
-        pageNumber={page.pdfPage}
-        renderTextLayer={true}
-        renderAnnotationLayer={true}
-        className="max-w-full drop-shadow-md flex justify-center [&>.react-pdf__Page__canvas]:!max-w-full [&>.react-pdf__Page__canvas]:!h-auto"
-        width={width}
-      />
-    </Document>
-  );
+  const pageWidth = isPlate ? plateWidth : portraitWidth;
 
   const firstOrdinal = currentSpread[0]?.ordinal ?? 0;
   const lastOrdinal = currentSpread[currentSpread.length - 1]?.ordinal ?? 0;
@@ -239,19 +233,14 @@ export function BookSpreadReader({ selectedBook, onClose, visible = true }: Book
             className={`flex w-full ${isMobile ? 'min-h-full h-max items-center justify-center p-3' : 'h-full'}`}
           >
             {isMobile || isPlate ? (
-              <div className={`flex w-full items-center justify-center ${isMobile ? '' : 'h-full'}`}>
-                {currentSpread[0] && renderPage(currentSpread[0], isPlate ? plateWidth : portraitWidth)}
-              </div>
+              <div ref={setLeftSlot} className={`flex w-full items-center justify-center ${isMobile ? '' : 'h-full'}`} />
             ) : (
-              [0, 1].map((slot) => (
-                <div key={slot} className="w-1/2 h-full flex items-center justify-center p-6">
-                  {currentSpread[slot] ? (
-                    renderPage(currentSpread[slot], portraitWidth)
-                  ) : (
-                    <div className="w-16 border-t-2 border-black/15" />
-                  )}
+              <>
+                <div ref={setLeftSlot} className="w-1/2 h-full flex items-center justify-center p-6" />
+                <div ref={setRightSlot} className="w-1/2 h-full flex items-center justify-center p-6">
+                  {!currentSpread[1] && <div className="w-16 border-t-2 border-black/15" />}
                 </div>
-              ))
+              </>
             )}
           </motion.div>
         </div>
@@ -270,13 +259,14 @@ export function BookSpreadReader({ selectedBook, onClose, visible = true }: Book
         )}
       </motion.div>
 
-      {/* Hidden persistent PDF loaders to measure every page and prevent AbortError */}
+      {/* One persistent loader per PDF: it measures every page once, and its visible pages portal into the spread */}
       <div className="hidden">
         {bookConfig.documents.map((doc, docIndex) => (
           <Document
             key={`preload-${doc.path}`}
             file={doc.path}
             loading={null}
+            externalLinkTarget="_blank"
             onLoadSuccess={async (pdf) => {
               const flags: boolean[] = [];
               for (let i = 1; i <= pdf.numPages; i++) {
@@ -287,7 +277,23 @@ export function BookSpreadReader({ selectedBook, onClose, visible = true }: Book
               setDocPages((prev) => ({ ...prev, [docIndex]: flags }));
             }}
             onLoadError={() => setDocPages((prev) => ({ ...prev, [docIndex]: [false] }))}
-          />
+          >
+            {currentSpread.map((page, slot) => {
+              const target = slot === 0 ? leftSlot : rightSlot;
+              if (page.docIndex !== docIndex || !target) return null;
+              return createPortal(
+                <Page
+                  pageNumber={page.pdfPage}
+                  renderTextLayer={true}
+                  renderAnnotationLayer={true}
+                  className="max-w-full drop-shadow-md flex justify-center [&>.react-pdf__Page__canvas]:!max-w-full [&>.react-pdf__Page__canvas]:!h-auto"
+                  width={pageWidth}
+                />,
+                target,
+                `${docIndex}-${page.pdfPage}`,
+              );
+            })}
+          </Document>
         ))}
       </div>
 

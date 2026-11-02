@@ -10,18 +10,20 @@ interface ArchiveEntranceTransitionProps {
 
 export function ArchiveEntranceTransition({ isTriggered }: ArchiveEntranceTransitionProps) {
   const router = useRouter();
-  const [particles, setParticles] = useState<{ id: number; x: number; y: number }[]>([]);
+  // Generate random particles for the portal effect; they only render once triggered, so this can't cause a hydration mismatch
+  const [particles] = useState(() =>
+    Array.from({ length: 40 }).map((_, i) => ({
+      id: i,
+      x: Math.random() * 100 - 50,
+      y: Math.random() * 100 - 50,
+      scale: Math.random() * 1.5 + 0.5,
+      duration: 1 + Math.random(),
+      delay: Math.random() * 0.3,
+    }))
+  );
 
   useEffect(() => {
     if (isTriggered) {
-      // Generate random particles for the portal effect
-      const newParticles = Array.from({ length: 40 }).map((_, i) => ({
-        id: i,
-        x: Math.random() * 100 - 50,
-        y: Math.random() * 100 - 50,
-      }));
-      setParticles(newParticles);
-
       // Pre-fetch the route for instant navigation
       router.prefetch("/archive");
 
@@ -78,13 +80,13 @@ export function ArchiveEntranceTransition({ isTriggered }: ArchiveEntranceTransi
               animate={{ 
                 x: `${p.x}vw`, 
                 y: `${p.y}vh`, 
-                scale: Math.random() * 1.5 + 0.5, 
+                scale: p.scale,
                 opacity: [0, 0.8, 0] 
               }}
               transition={{ 
-                duration: 1 + Math.random(), 
+                duration: p.duration,
                 ease: "easeOut",
-                delay: Math.random() * 0.3
+                delay: p.delay
               }}
               className="absolute w-1 h-1 bg-white/60 rounded-full blur-[1px]"
             />
