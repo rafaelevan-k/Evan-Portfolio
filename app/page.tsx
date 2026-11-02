@@ -170,6 +170,7 @@ export default function Home() {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [isEnteringArchive, setIsEnteringArchive] = useState(false);
   const [isGameMode, setIsGameMode] = useState(false);
+  const [heroRevealed, setHeroRevealed] = useState(false);
   const ambientMotionPaused = prefersReducedMotion || isGameMode;
 
   const cursorX = useMotionValue(-400);
@@ -251,6 +252,8 @@ export default function Home() {
     setMobileMenuOpen(false);
   };
 
+  const revealHero = useCallback(() => setHeroRevealed(true), []);
+
   const enterGameMode = useCallback(() => {
     setMobileMenuOpen(false);
     setIsGameMode(true);
@@ -284,7 +287,7 @@ export default function Home() {
         }}
       >
         <div className={isGameMode ? "invisible" : undefined} aria-hidden={isGameMode || undefined} inert={isGameMode || undefined}>
-          <Entrance />
+          <Entrance onReveal={revealHero} />
           <ArchiveEntranceTransition isTriggered={isEnteringArchive} />
 
         {/* Washi grain and scroll-reactive Tokyo transit field */}
@@ -426,16 +429,16 @@ export default function Home() {
         <section id="about" className="relative z-10 flex min-h-screen items-center px-6 pb-16 pt-32 lg:px-10">
           <div className="mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-14 lg:grid-cols-12 lg:gap-8">
             <motion.div style={{ y: heroTextY, opacity: heroTextOpacity }} className="relative z-10 lg:col-span-7">
-              <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7 }} className="mb-8 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.28em]">
+              <motion.div initial={{ opacity: 0, x: -30 }} animate={heroRevealed ? { opacity: 1, x: 0 } : undefined} transition={{ duration: 0.7 }} className="mb-8 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.28em]">
                 <span className="h-px w-10 bg-[#d94b35]" />
                 <span>Yogyakarta · Indonesia</span>
               </motion.div>
 
               <h1 className="font-display text-[clamp(4rem,10vw,9.5rem)] font-semibold uppercase leading-[0.78] tracking-[-0.075em]">
-                <motion.span initial={{ y: 80, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }} className="block">
+                <motion.span initial={{ y: 80, opacity: 0 }} animate={heroRevealed ? { y: 0, opacity: 1 } : undefined} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }} className="block">
                   Rafael
                 </motion.span>
-                <motion.span initial={{ y: 80, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.08, duration: 0.8, ease: [0.22, 1, 0.36, 1] }} className="ml-[0.18em] block text-[#d94b35]">
+                <motion.span initial={{ y: 80, opacity: 0 }} animate={heroRevealed ? { y: 0, opacity: 1 } : undefined} transition={{ delay: 0.08, duration: 0.8, ease: [0.22, 1, 0.36, 1] }} className="ml-[0.18em] block text-[#d94b35]">
                   Evan
                 </motion.span>
               </h1>
@@ -479,7 +482,7 @@ export default function Home() {
                   portraitY.set(0);
                 }}
                 initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
+                animate={heroRevealed ? { opacity: 1, scale: 1 } : undefined}
                 transition={{ delay: 0.2, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
                 style={{ perspective: 1000 }}
                 className="relative aspect-[4/5] cursor-crosshair"

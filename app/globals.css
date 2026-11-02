@@ -87,6 +87,15 @@ body {
   min-height: 100vh;
 }
 
+/* Entrance door: hidden for returning visitors, locks scroll while shut */
+html[data-entered] [data-entrance] {
+  display: none;
+}
+
+body:has([data-entrance="closed"]) {
+  overflow: hidden;
+}
+
 /* Subtle dot pattern background */
 body::before {
   content: "";

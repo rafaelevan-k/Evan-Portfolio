@@ -37,6 +37,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+      <head>
+        {/* Runs before first paint so returning visitors never see the entrance door */}
+        <script dangerouslySetInnerHTML={{ __html: `try{if(sessionStorage.getItem("hasVisitedPortfolio"))document.documentElement.dataset.entered="true"}catch(e){}` }} />
+        <noscript>
+          <style>{`[data-entrance]{display:none}`}</style>
+        </noscript>
+      </head>
       <body className={`${nunito.variable} ${inter.variable} antialiased transition-colors duration-300`} suppressHydrationWarning>
         <ThemeProvider
           attribute="class"
