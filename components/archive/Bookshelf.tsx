@@ -1,37 +1,48 @@
 "use client";
 
+import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useFrame } from "@react-three/fiber";
 import { RoundedBox, Text } from "@react-three/drei";
 import { BookItem } from "@/components/archive/BookItem";
 import type { BookType } from "@/app/archive/page";
 import * as THREE from "three";
+import {
+  ARCHIVE_FONT,
+  HERO_BOOKS,
+  HERO_DEPTH,
+  LEVEL_CLEAR_HEIGHT,
+  PULL_OUT_Z,
+  SHELF_DEPTH,
+  SHELF_HEIGHT,
+  SHELF_SURFACES,
+  SHELF_WIDTH,
+  UPRIGHT_X,
+  buildFillerBooks,
+  type BoxInstance,
+  type HeroBook,
+} from "./shelfLayout";
 
 interface BookshelfProps {
   selectedBook: BookType;
   setSelectedBook: (book: BookType) => void;
+  onBookOpened: () => void;
   woodMaterial: THREE.Material;
 }
 
-// Brass indexing label for each shelf level (Shadows disabled)
+// Brass indexing plate on the shelf lip, directly under the book it names
 function ShelfLabel({ text, position }: { text: string; position: [number, number, number] }) {
   return (
     <group position={position}>
-      {/* Plate */}
-      <RoundedBox
-        args={[0.22, 0.03, 0.002]}
-        position={[0, 0, 0]}
-        radius={0.001}
-        smoothness={2}
-      >
-        <meshStandardMaterial color="#c6a75f" metalness={0.9} roughness={0.15} />
+      <RoundedBox args={[0.42, 0.034, 0.004]} radius={0.001} smoothness={2}>
+        <meshStandardMaterial color="#c6a75f" metalness={0.85} roughness={0.3} />
       </RoundedBox>
-      {/* Text on plate */}
       <Text
-        position={[0, 0, 0.002]}
-        fontSize={0.012}
+        position={[0, 0, 0.003]}
+        fontSize={0.021}
         color="#2a1f0a"
         anchorX="center"
         anchorY="middle"
-        font="https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5.0.21/files/playfair-display-latin-400-normal.woff"
+        font={ARCHIVE_FONT}
       >
         {text}
       </Text>
@@ -39,211 +50,199 @@ function ShelfLabel({ text, position }: { text: string; position: [number, numbe
   );
 }
 
-// Built-in warm orange shelf lights helper component
-function ShelfLight({ position }: { position: [number, number, number] }) {
+// Warm strip light fitted under the board above a level
+function ShelfLight({ y }: { y: number }) {
   return (
-    <group position={position}>
-      {/* LED Fixture Casing (Dark brown/black) */}
-      <mesh position={[0, -0.005, 0]}>
-        <boxGeometry args={[0.7, 0.01, 0.03]} />
-        <meshStandardMaterial color="#1c120c" roughness={0.8} />
-      </mesh>
-      {/* Glowing LED Strip (Warm Orange Emissive) */}
-      <mesh position={[0, -0.009, 0]}>
-        <boxGeometry args={[0.66, 0.004, 0.015]} />
-        <meshStandardMaterial color="#ffa855" emissive="#ff6a00" emissiveIntensity={6} />
-      </mesh>
-      {/* Warm Soft Orange Ambient Light Glow (Two point lights for linear wash, no castShadow for 60 FPS) */}
-      <pointLight
-        position={[-0.18, -0.08, -0.05]}
-        intensity={1.8}
-        distance={1.4}
-        decay={1.8}
-        color="#ff7a1a"
-      />
-      <pointLight
-        position={[0.18, -0.08, -0.05]}
-        intensity={1.8}
-        distance={1.4}
-        decay={1.8}
-        color="#ff7a1a"
-      />
+    <group position={[0, y, 0.18]}>
+      {[-1.2, 0, 1.2].map((x) => (
+        <mesh key={x} position={[x, -0.006, 0]}>
+          <boxGeometry args={[1.02, 0.006, 0.014]} />
+          <meshStandardMaterial color="#ffd9a8" emissive="#ffb066" emissiveIntensity={3} />
+        </mesh>
+      ))}
+      {/* Two point lights per level give a linear wash without per-book lights */}
+      {[-0.9, 0.9].map((x) => (
+        <pointLight key={x} position={[x, -0.1, -0.02]} intensity={1.3} distance={1.7} decay={1.7} color="#ffbe80" />
+      ))}
     </group>
   );
 }
 
-export function Bookshelf({ selectedBook, setSelectedBook, woodMaterial }: BookshelfProps) {
+// One always-mounted light follows the active book: changing the light count would recompile every shader
+function BookLight({ hovered, selected }: { hovered: HeroBook | undefined; selected: HeroBook | undefined }) {
+  const lightRef = useRef<THREE.PointLight>(null);
+
+  useFrame((state, delta) => {
+    const light = lightRef.current;
+    if (!light) return;
+
+    if (selected) {
+      light.position.set(selected.position[0] + HERO_DEPTH / 2, selected.position[1] + 0.15, selected.position[2] + PULL_OUT_Z + 0.65);
+    } else if (hovered) {
+      light.position.set(hovered.position[0], hovered.position[1], hovered.position[2] + HERO_DEPTH / 2 + 0.35);
+    }
+
+    const target = selected ? 1.4 : hovered ? 0.5 : 0;
+    if (Math.abs(light.intensity - target) > 0.01) {
+      light.intensity = THREE.MathUtils.damp(light.intensity, target, 6, delta);
+      state.invalidate();
+    } else {
+      light.intensity = target;
+    }
+  });
+
+  return <pointLight ref={lightRef} intensity={0} distance={1.6} color="#ffd880" />;
+}
+
+function InstancedBoxes({ items, castShadow, children }: { items: BoxInstance[]; castShadow?: boolean; children: React.ReactNode }) {
+  const meshRef = useRef<THREE.InstancedMesh>(null);
+
+  useLayoutEffect(() => {
+    const mesh = meshRef.current;
+    if (!mesh) return;
+
+    const dummy = new THREE.Object3D();
+    const color = new THREE.Color();
+    items.forEach((item, index) => {
+      dummy.position.set(...item.position);
+      dummy.rotation.set(0, 0, item.rotationZ);
+      dummy.scale.set(...item.scale);
+      dummy.updateMatrix();
+      mesh.setMatrixAt(index, dummy.matrix);
+      if (item.color) mesh.setColorAt(index, color.set(item.color));
+    });
+    mesh.instanceMatrix.needsUpdate = true;
+    if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
+    mesh.computeBoundingSphere();
+  }, [items]);
+
   return (
-    <group receiveShadow castShadow>
-      {/* 1. Cabinet Base (sits on floor at local Y=0, using shared woodMaterial) */}
-      <RoundedBox
-        args={[0.88, 0.1, 0.5]}
-        position={[0, 0.05, 0]}
-        radius={0.01}
-        smoothness={3}
-        receiveShadow
-        castShadow
-        material={woodMaterial}
-      />
+    <instancedMesh ref={meshRef} args={[undefined, undefined, items.length]} castShadow={castShadow} receiveShadow>
+      <boxGeometry args={[1, 1, 1]} />
+      {children}
+    </instancedMesh>
+  );
+}
 
-      {/* 2. Side Panel Left (using shared woodMaterial) */}
-      <RoundedBox
-        args={[0.04, 3.1, 0.5]}
-        position={[-0.42, 1.55, 0]}
-        radius={0.01}
-        smoothness={3}
-        receiveShadow
-        castShadow
-        material={woodMaterial}
-      />
+// Muted books that make the shelf feel lived in; instanced so they cost three draw calls
+function FillerBooks() {
+  const books = useMemo(() => buildFillerBooks(), []);
 
-      {/* 3. Side Panel Right (using shared woodMaterial) */}
-      <RoundedBox
-        args={[0.04, 3.1, 0.5]}
-        position={[0.42, 1.55, 0]}
-        radius={0.01}
-        smoothness={3}
-        receiveShadow
-        castShadow
-        material={woodMaterial}
-      />
+  return (
+    <>
+      <InstancedBoxes items={books.covers} castShadow>
+        <meshStandardMaterial roughness={0.8} metalness={0.02} />
+      </InstancedBoxes>
+      <InstancedBoxes items={books.pages}>
+        <meshStandardMaterial color="#c9bea6" roughness={0.95} />
+      </InstancedBoxes>
+      <InstancedBoxes items={books.bands}>
+        <meshStandardMaterial color="#a88f4f" metalness={0.8} roughness={0.4} />
+      </InstancedBoxes>
+    </>
+  );
+}
 
-      {/* 4. Back Panel (using shared woodMaterial) */}
-      <RoundedBox
-        args={[0.88, 3.1, 0.04]}
-        position={[0, 1.55, -0.23]}
-        radius={0.01}
-        smoothness={3}
-        receiveShadow
-        material={woodMaterial}
-      />
+export function Bookshelf({ selectedBook, setSelectedBook, onBookOpened, woodMaterial }: BookshelfProps) {
+  const [hoveredType, setHoveredType] = useState<HeroBook["type"] | null>(null);
+  const hoveredBook = HERO_BOOKS.find((book) => book.type === hoveredType);
+  const activeBook = HERO_BOOKS.find((book) => book.type === selectedBook);
 
-      {/* 5. Inner Shelf 2 (Separating level 1 and 2, surface at Y=0.85, using shared woodMaterial) */}
-      <RoundedBox
-        args={[0.8, 0.04, 0.48]}
-        position={[0, 0.83, 0.01]}
-        radius={0.005}
-        smoothness={3}
-        receiveShadow
-        castShadow
-        material={woodMaterial}
-      />
+  return (
+    <group>
+      {/* Plinth */}
+      <RoundedBox args={[SHELF_WIDTH + 0.04, 0.1, SHELF_DEPTH]} position={[0, 0.05, 0]} radius={0.01} smoothness={3} receiveShadow castShadow material={woodMaterial} />
 
-      {/* 6. Inner Shelf 3 (Separating level 2 and 3, surface at Y=1.60, using shared woodMaterial) */}
-      <RoundedBox
-        args={[0.8, 0.04, 0.48]}
-        position={[0, 1.58, 0.01]}
-        radius={0.005}
-        smoothness={3}
-        receiveShadow
-        castShadow
-        material={woodMaterial}
-      />
+      {/* Side panels */}
+      {[-1, 1].map((side) => (
+        <RoundedBox
+          key={side}
+          args={[0.04, SHELF_HEIGHT, SHELF_DEPTH]}
+          position={[(side * SHELF_WIDTH) / 2, SHELF_HEIGHT / 2, 0]}
+          radius={0.01}
+          smoothness={3}
+          receiveShadow
+          castShadow
+          material={woodMaterial}
+        />
+      ))}
 
-      {/* 7. Inner Shelf 4 (Separating level 3 and 4, surface at Y=2.35, using shared woodMaterial) */}
-      <RoundedBox
-        args={[0.8, 0.04, 0.48]}
-        position={[0, 2.33, 0.01]}
-        radius={0.005}
-        smoothness={3}
-        receiveShadow
-        castShadow
-        material={woodMaterial}
-      />
+      {/* Back panel */}
+      <RoundedBox args={[SHELF_WIDTH, SHELF_HEIGHT, 0.04]} position={[0, SHELF_HEIGHT / 2, -0.23]} radius={0.01} smoothness={3} receiveShadow material={woodMaterial} />
 
-      {/* 8. Top Cabinet Cap (using shared woodMaterial) */}
-      <RoundedBox
-        args={[0.88, 0.04, 0.5]}
-        position={[0, 3.08, 0]}
-        radius={0.01}
-        smoothness={3}
-        receiveShadow
-        castShadow
-        material={woodMaterial}
-      />
-
-      {/* --- Cabinet Top Decor (Potted Plant & Stack of Books, shadows disabled for performance) --- */}
-      <group position={[0, 3.1, 0]}>
-        {/* Pot */}
-        <mesh position={[-0.2, 0.05, 0.0]}>
-          <cylinderGeometry args={[0.08, 0.06, 0.1, 16]} />
-          <meshStandardMaterial color="#c36a4b" roughness={0.85} />
+      {/* Uprights splitting the shelf into three bays */}
+      {UPRIGHT_X.map((x) => (
+        <mesh key={x} position={[x, 1.58, 0.01]} receiveShadow castShadow material={woodMaterial}>
+          <boxGeometry args={[0.03, 2.96, 0.48]} />
         </mesh>
-        {/* Plant Leaves */}
-        <RoundedBox args={[0.06, 0.22, 0.01]} position={[-0.2, 0.12, 0]} rotation={[0.4, 0, 0.6]} radius={0.002}>
-          <meshStandardMaterial color="#2d4a2c" roughness={0.8} />
-        </RoundedBox>
-        <RoundedBox args={[0.06, 0.22, 0.01]} position={[-0.2, 0.12, 0]} rotation={[-0.4, 0, -0.6]} radius={0.002}>
-          <meshStandardMaterial color="#2d4a2c" roughness={0.8} />
-        </RoundedBox>
-        <RoundedBox args={[0.06, 0.22, 0.01]} position={[-0.2, 0.13, 0]} rotation={[0, 0.5, 0.1]} radius={0.002}>
-          <meshStandardMaterial color="#345432" roughness={0.8} />
-        </RoundedBox>
+      ))}
 
-        {/* Stack of Books */}
-        {/* Bottom Book */}
-        <RoundedBox args={[0.3, 0.045, 0.22]} position={[0.16, 0.0225, 0.02]} rotation={[0, 0.1, 0]} radius={0.003}>
+      {/* Shelf boards (the bottom level stands on the plinth) */}
+      {SHELF_SURFACES.slice(1).map((surface) => (
+        <RoundedBox
+          key={surface}
+          args={[SHELF_WIDTH - 0.04, 0.04, 0.48]}
+          position={[0, surface - 0.02, 0.01]}
+          radius={0.005}
+          smoothness={3}
+          receiveShadow
+          castShadow
+          material={woodMaterial}
+        />
+      ))}
+
+      {/* Top cap */}
+      <RoundedBox args={[SHELF_WIDTH + 0.08, 0.05, SHELF_DEPTH + 0.03]} position={[0, SHELF_HEIGHT - 0.015, 0.01]} radius={0.01} smoothness={3} receiveShadow castShadow material={woodMaterial} />
+
+      {/* --- Cabinet Top Decor (shadows disabled for performance) --- */}
+      <group position={[0, SHELF_HEIGHT + 0.01, 0]}>
+        <group position={[-1.1, 0, 0]}>
+          <mesh position={[0, 0.05, 0]}>
+            <cylinderGeometry args={[0.08, 0.06, 0.1, 16]} />
+            <meshStandardMaterial color="#8d4f3a" roughness={0.85} />
+          </mesh>
+          <RoundedBox args={[0.06, 0.26, 0.01]} position={[-0.05, 0.2, 0]} rotation={[0.3, 0, 0.5]} radius={0.002}>
+            <meshStandardMaterial color="#3d5c3a" roughness={0.8} />
+          </RoundedBox>
+          <RoundedBox args={[0.06, 0.26, 0.01]} position={[0.05, 0.2, 0]} rotation={[-0.3, 0, -0.5]} radius={0.002}>
+            <meshStandardMaterial color="#3d5c3a" roughness={0.8} />
+          </RoundedBox>
+          <RoundedBox args={[0.06, 0.3, 0.01]} position={[0, 0.23, 0]} rotation={[0, 0.5, 0.05]} radius={0.002}>
+            <meshStandardMaterial color="#4a6e45" roughness={0.8} />
+          </RoundedBox>
+        </group>
+        <RoundedBox args={[0.34, 0.05, 0.24]} position={[1, 0.025, 0.02]} rotation={[0, 0.1, 0]} radius={0.003}>
           <meshStandardMaterial color="#203054" roughness={0.7} />
         </RoundedBox>
-        {/* Top Book */}
-        <RoundedBox args={[0.26, 0.04, 0.2]} position={[0.18, 0.065, 0.01]} rotation={[0, -0.2, 0]} radius={0.003}>
+        <RoundedBox args={[0.28, 0.04, 0.2]} position={[1.02, 0.07, 0.01]} rotation={[0, -0.2, 0]} radius={0.003}>
           <meshStandardMaterial color="#4f3824" roughness={0.7} />
         </RoundedBox>
       </group>
 
-      {/* --- Shelf Index Labels (Brass Plate on Lips) --- */}
-      <ShelfLabel text="CURRICULUM VITAE" position={[0, 0.05, 0.251]} />
-      <ShelfLabel text="CERTIFICATIONS" position={[0, 0.83, 0.251]} />
-      <ShelfLabel text="VOLUNTEER & ORG" position={[0, 1.58, 0.251]} />
-      <ShelfLabel text="AWARDS" position={[0, 2.33, 0.251]} />
+      {SHELF_SURFACES.map((surface) => (
+        <ShelfLight key={surface} y={surface + LEVEL_CLEAR_HEIGHT} />
+      ))}
 
-      {/* --- Built-in Warm Shelf Lights (Fitted under each shelf ceiling) --- */}
-      <ShelfLight position={[0, 0.81, 0.18]} />       {/* Illuminates Level 1 (CV) */}
-      <ShelfLight position={[0, 1.56, 0.18]} />       {/* Illuminates Level 2 (Certifications) */}
-      <ShelfLight position={[0, 2.31, 0.18]} />       {/* Illuminates Level 3 (Volunteer) */}
-      <ShelfLight position={[0, 3.06, 0.18]} />       {/* Illuminates Level 4 (Awards) */}
+      <FillerBooks />
 
-      {/* --- Books Placed Vertically (Y is adjusted based on shelf surfaces) --- */}
-      
-      {/* Level 1 (Bottom shelf): Curriculum Vitae */}
-      <BookItem 
-        type="cv" 
-        title="Curriculum Vitae" 
-        position={[0, 0.4, -0.05]} 
-        color="#542020" // Deep Burgundy Leather
-        selectedBook={selectedBook} 
-        setSelectedBook={setSelectedBook} 
-      />
-      
-      {/* Level 2: Certifications */}
-      <BookItem 
-        type="certifications" 
-        title="Certifications" 
-        position={[0, 1.15, -0.05]} 
-        color="#203054" // Deep Indigo/Navy Leather
-        selectedBook={selectedBook} 
-        setSelectedBook={setSelectedBook} 
-      />
-      
-      {/* Level 3: Volunteer & Organization */}
-      <BookItem 
-        type="volunteer" 
-        title="Volunteer & Org" 
-        position={[0, 1.9, -0.05]} 
-        color="#4f3824" // Antique Dark Brown Leather
-        selectedBook={selectedBook} 
-        setSelectedBook={setSelectedBook} 
-      />
-      
-      {/* Level 4 (Top shelf): Awards */}
-      <BookItem 
-        type="awards" 
-        title="Awards" 
-        position={[0, 2.65, -0.05]} 
-        color="#1b3d2b" // Deep Forest Green Leather
-        selectedBook={selectedBook} 
-        setSelectedBook={setSelectedBook} 
-      />
+      {HERO_BOOKS.map((book) => (
+        <group key={book.type}>
+          <ShelfLabel
+            text={book.title}
+            position={[book.position[0], book.level === 0 ? 0.05 : SHELF_SURFACES[book.level] - 0.02, SHELF_DEPTH / 2 + 0.012]}
+          />
+          <BookItem
+            book={book}
+            hovered={hoveredType === book.type}
+            selectedBook={selectedBook}
+            setSelectedBook={setSelectedBook}
+            onHoverChange={setHoveredType}
+            onBookOpened={onBookOpened}
+          />
+        </group>
+      ))}
+
+      <BookLight hovered={hoveredBook} selected={activeBook} />
     </group>
   );
 }

@@ -19,7 +19,7 @@ function ArchiveLoader() {
   }, []);
 
   return (
-    <div className="absolute inset-0 flex items-center justify-center bg-[#0a0a0a]">
+    <div className="absolute inset-0 flex items-center justify-center bg-[#141a17]">
       <div className="flex flex-col items-center">
         <div className="w-8 h-8 border-2 border-white/20 border-t-white/80 rounded-full animate-spin mb-6" />
         <motion.p 
@@ -51,7 +51,14 @@ export type BookType = "cv" | "certifications" | "volunteer" | "awards" | null;
 
 export default function ArchivePage() {
   const [selectedBook, setSelectedBook] = useState<BookType>(null);
+  // The reader mounts on selection so PDFs load during the 3D opening, and shows once the cover is open
+  const [isReaderVisible, setIsReaderVisible] = useState(false);
   const [isMobile, setIsMobile] = useState<boolean | null>(null);
+
+  const closeBook = () => {
+    setSelectedBook(null);
+    setIsReaderVisible(false);
+  };
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -65,6 +72,7 @@ export default function ArchivePage() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && selectedBook) {
         setSelectedBook(null);
+        setIsReaderVisible(false);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -79,16 +87,26 @@ export default function ArchivePage() {
   }
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden bg-[#F5F2EB] selection:bg-white/20 selection:text-white">
+    <div className="relative w-screen h-screen overflow-hidden bg-[#141a17] selection:bg-white/20 selection:text-white">
       {/* 3D Environment */}
-      <ArchiveScene selectedBook={selectedBook} setSelectedBook={setSelectedBook} />
+      <ArchiveScene
+        selectedBook={selectedBook}
+        setSelectedBook={setSelectedBook}
+        onBookOpened={() => setIsReaderVisible(true)}
+      />
+
+      {/* Vignette that pulls the eye toward the shelf */}
+      <div className="pointer-events-none absolute inset-0 z-10 bg-[radial-gradient(ellipse_at_center,_transparent_55%,_rgba(0,0,0,0.5)_100%)]" />
+      {/* Tighter vignette while a book is out, so the room falls away around it */}
+      <div className={`pointer-events-none absolute inset-0 z-10 bg-[radial-gradient(ellipse_at_center,_transparent_25%,_rgba(0,0,0,0.75)_85%)] transition-opacity duration-700 ${selectedBook ? "opacity-100" : "opacity-0"}`} />
 
       {/* 2D UI Overlay: The PDF Book Spread */}
       <AnimatePresence>
         {selectedBook && (
           <BookSpreadReader 
-            selectedBook={selectedBook} 
-            onClose={() => setSelectedBook(null)} 
+            selectedBook={selectedBook}
+            visible={isReaderVisible}
+            onClose={closeBook}
           />
         )}
       </AnimatePresence>
@@ -98,7 +116,7 @@ export default function ArchivePage() {
         {!selectedBook && (
           <Link
             href="/"
-            className="absolute top-6 left-6 md:top-10 md:left-10 z-40 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-white/70 text-xs font-medium tracking-widest uppercase hover:bg-white/10 hover:text-white transition-colors backdrop-blur-md"
+            className="absolute top-6 left-6 md:top-10 md:left-10 z-40 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/45 border border-white/20 text-white/90 text-xs font-medium tracking-widest uppercase hover:bg-black/65 hover:text-white transition-colors backdrop-blur-md"
           >
             <ArrowLeft className="w-4 h-4" />
             Return

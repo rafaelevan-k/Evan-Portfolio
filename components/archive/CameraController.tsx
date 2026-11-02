@@ -1,76 +1,69 @@
 "use client";
 
-import { useFrame, useThree } from "@react-three/fiber";
+import { useRef } from "react";
+import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import type { BookType } from "@/app/archive/page";
+import { HERO_BOOKS, ROOM_OFFSET_Y, SHELF_WIDTH } from "./shelfLayout";
 
 interface CameraControllerProps {
   selectedBook: BookType;
 }
 
+const OVERVIEW_FOV = 42;
+const READING_FOV = 38;
+const OVERVIEW_DISTANCE = 5.6;
+// Shelf width plus breathing room that must stay in frame on narrow viewports
+const FRAMED_WIDTH = SHELF_WIDTH + 1;
+
+// Frame-rate independent smoothing: stays stable on long frames, unlike lerp(a, b, k * delta)
+const DAMPING = 3;
+
 export function CameraController({ selectedBook }: CameraControllerProps) {
-  const { camera } = useThree();
-  const vec = new THREE.Vector3();
-  const targetLookAt = new THREE.Vector3(0, 0, 0);
+  const lookAt = useRef(new THREE.Vector3(0, 0.55, -0.2));
+  const targetPos = useRef(new THREE.Vector3());
+  const targetLook = useRef(new THREE.Vector3());
 
   useFrame((state, delta) => {
-    // Determine target position, lookAt, and FOV
-    const targetPos = new THREE.Vector3();
-    const targetLook = new THREE.Vector3();
-    let targetFov = 42;
+    const camera = state.camera as THREE.PerspectiveCamera;
+    const hero = HERO_BOOKS.find((book) => book.type === selectedBook);
+    let targetFov = OVERVIEW_FOV;
 
-    if (!selectedBook) {
-      targetPos.set(1.4, 0.9, 4.4);
-      targetLook.set(-0.15, 0.55, 0);
-      targetFov = 42;
+    if (hero) {
+      const bookWorldY = hero.position[1] + ROOM_OFFSET_Y;
+      // The open book's spine ends up at the book's shelf X, right where the reader's fold appears
+      targetPos.current.set(hero.position[0], bookWorldY, 2.7);
+      targetLook.current.set(hero.position[0], bookWorldY, 0);
+      targetFov = READING_FOV;
     } else {
-      let bookWorldY = 0.55;
-      if (selectedBook === "awards") bookWorldY = 1.65;
-      else if (selectedBook === "volunteer") bookWorldY = 0.9;
-      else if (selectedBook === "certifications") bookWorldY = 0.15;
-      else if (selectedBook === "cv") bookWorldY = -0.6;
-
-      targetPos.set(0, bookWorldY, 2.7);
-      targetLook.set(0, bookWorldY, 0);
-      targetFov = 38;
+      const halfFovTan = Math.tan(THREE.MathUtils.degToRad(OVERVIEW_FOV / 2));
+      const fitDistance = FRAMED_WIDTH / 2 / (halfFovTan * state.viewport.aspect);
+      const distance = Math.max(OVERVIEW_DISTANCE, fitDistance);
+      targetPos.current.set(0.75, 0.7, distance);
+      targetLook.current.set(0, 0.55, -0.2);
     }
 
-    const posDiff = camera.position.distanceTo(targetPos);
-    
-    // Check direction convergence to lookAt targets
-    const currentDir = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion);
-    const targetDir = new THREE.Vector3().subVectors(targetLook, camera.position).normalize();
-    const dirDiff = currentDir.distanceTo(targetDir);
-
-    const fovDiff = camera instanceof THREE.PerspectiveCamera ? Math.abs(camera.fov - targetFov) : 0;
-
-    const isAnimating = posDiff > 0.002 || dirDiff > 0.002 || fovDiff > 0.05;
+    const isAnimating =
+      camera.position.distanceTo(targetPos.current) > 0.002 ||
+      lookAt.current.distanceTo(targetLook.current) > 0.002 ||
+      Math.abs(camera.fov - targetFov) > 0.05;
 
     if (isAnimating) {
-      // Lerp camera position
-      camera.position.lerp(targetPos, 3 * delta);
-
-      // Lerp camera lookAt
-      const currentLookAt = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion).add(camera.position);
-      currentLookAt.lerp(targetLook, 3.5 * delta);
-      camera.lookAt(currentLookAt);
-
-      // Lerp FOV
-      if (camera instanceof THREE.PerspectiveCamera) {
-        camera.fov = THREE.MathUtils.lerp(camera.fov, targetFov, 3 * delta);
-        camera.updateProjectionMatrix();
-      }
-
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const alpha = reduceMotion ? 1 : 1 - Math.exp(-DAMPING * delta);
+      camera.position.lerp(targetPos.current, alpha);
+      lookAt.current.lerp(targetLook.current, alpha);
+      camera.fov = THREE.MathUtils.lerp(camera.fov, targetFov, alpha);
       state.invalidate();
     } else {
       // Snap to final values to sleep the renderer
-      camera.position.copy(targetPos);
-      camera.lookAt(targetLook);
-      if (camera instanceof THREE.PerspectiveCamera && camera.fov !== targetFov) {
-        camera.fov = targetFov;
-        camera.updateProjectionMatrix();
-      }
+      camera.position.copy(targetPos.current);
+      lookAt.current.copy(targetLook.current);
+      camera.fov = targetFov;
     }
+
+    camera.lookAt(lookAt.current);
+    camera.updateProjectionMatrix();
   });
 
   return null;

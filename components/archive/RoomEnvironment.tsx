@@ -2,128 +2,142 @@
 
 import { ContactShadows, RoundedBox, Text } from "@react-three/drei";
 import * as THREE from "three";
+import { ARCHIVE_FONT } from "./shelfLayout";
 
 interface RoomEnvironmentProps {
   woodMaterial: THREE.Material;
   floorMaterial: THREE.Material;
 }
 
+const WALL_COLOR = "#2c4136";
+const TRIM_COLOR = "#263a30";
+const WALL_Z = -0.26;
+const ROOM_HALF_WIDTH = 6;
+const ROOM_HEIGHT = 4.2;
+const ROOM_DEPTH = 10;
+const BATTEN_X = [-5.4, -4.2, -3, 3, 4.2, 5.4];
+
+function Trim({ args, position }: { args: [number, number, number]; position: [number, number, number] }) {
+  return (
+    <mesh position={position} receiveShadow>
+      <boxGeometry args={args} />
+      <meshStandardMaterial color={TRIM_COLOR} roughness={0.7} />
+    </mesh>
+  );
+}
+
 export function RoomEnvironment({ woodMaterial, floorMaterial }: RoomEnvironmentProps) {
   return (
     <>
-      {/* Wooden Floor Planks (using shared floorMaterial) */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-1.5, -0.1, 2]} receiveShadow material={floorMaterial}>
-        <planeGeometry args={[18, 6]} />
+      {/* Floor planks */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, WALL_Z + ROOM_DEPTH / 2]} receiveShadow material={floorMaterial}>
+        <planeGeometry args={[ROOM_HALF_WIDTH * 2, ROOM_DEPTH]} />
       </mesh>
 
-      {/* Walnut Wall Panel (using shared woodMaterial) */}
-      <mesh position={[-1.5, 2.9, -1]} receiveShadow material={woodMaterial}>
-        <planeGeometry args={[18, 6]} />
+      {/* Painted walls and ceiling, so the room never ends inside the frame */}
+      <mesh position={[0, ROOM_HEIGHT / 2, WALL_Z]} receiveShadow>
+        <planeGeometry args={[ROOM_HALF_WIDTH * 2, ROOM_HEIGHT]} />
+        <meshStandardMaterial color={WALL_COLOR} roughness={0.85} />
       </mesh>
-
-      {/* Cozy Jute/Woven Rug under the bookshelf cabinet */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.095, 0.2]} receiveShadow>
-        <planeGeometry args={[2.8, 2.0]} />
-        <meshStandardMaterial color="#a38260" roughness={0.95} />
-      </mesh>
-
-      {/* Antique Storage Trunk / Chest on the left side of the cabinet */}
-      <group position={[-1.1, -0.1, 0.2]} rotation={[0, 0.25, 0]}>
-        {/* Trunk Body (using shared woodMaterial) */}
-        <RoundedBox args={[0.55, 0.38, 0.38]} position={[0, 0.19, 0]} radius={0.008} smoothness={3} receiveShadow castShadow material={woodMaterial} />
-        
-        {/* Left Metal Band (Shadows disabled) */}
-        <mesh position={[-0.15, 0.19, 0]}>
-          <boxGeometry args={[0.02, 0.39, 0.39]} />
-          <meshStandardMaterial color="#a6894b" metalness={0.8} roughness={0.2} />
+      {[-1, 1].map((side) => (
+        <mesh key={side} position={[side * ROOM_HALF_WIDTH, ROOM_HEIGHT / 2, WALL_Z + ROOM_DEPTH / 2]} rotation={[0, -side * Math.PI / 2, 0]}>
+          <planeGeometry args={[ROOM_DEPTH, ROOM_HEIGHT]} />
+          <meshStandardMaterial color={WALL_COLOR} roughness={0.85} />
         </mesh>
-        {/* Right Metal Band (Shadows disabled) */}
-        <mesh position={[0.15, 0.19, 0]}>
-          <boxGeometry args={[0.02, 0.39, 0.39]} />
-          <meshStandardMaterial color="#a6894b" metalness={0.8} roughness={0.2} />
-        </mesh>
+      ))}
+      <mesh position={[0, ROOM_HEIGHT, WALL_Z + ROOM_DEPTH / 2]} rotation={[Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[ROOM_HALF_WIDTH * 2, ROOM_DEPTH]} />
+        <meshStandardMaterial color="#1b241f" roughness={0.9} />
+      </mesh>
 
-        {/* Decorative stack of 2 books on top of the trunk (Shadows disabled) */}
-        <group position={[0, 0.38, 0]}>
-          {/* Bottom Book */}
-          <RoundedBox args={[0.3, 0.05, 0.22]} position={[0.02, 0.025, -0.02]} rotation={[0, 0.1, 0]} radius={0.003}>
-            <meshStandardMaterial color="#4f1e1e" roughness={0.7} />
-          </RoundedBox>
-          {/* Top Book */}
-          <RoundedBox args={[0.26, 0.045, 0.2]} position={[0.0, 0.07, -0.01]} rotation={[0, -0.15, 0]} radius={0.003}>
-            <meshStandardMaterial color="#1a3d24" roughness={0.7} />
-          </RoundedBox>
-        </group>
+      {/* Wall panelling: baseboard, dado rail, crown, and battens */}
+      <Trim args={[ROOM_HALF_WIDTH * 2, 0.2, 0.03]} position={[0, 0.1, WALL_Z + 0.015]} />
+      <Trim args={[ROOM_HALF_WIDTH * 2, 0.05, 0.03]} position={[0, 1.1, WALL_Z + 0.015]} />
+      <Trim args={[ROOM_HALF_WIDTH * 2, 0.12, 0.04]} position={[0, ROOM_HEIGHT - 0.06, WALL_Z + 0.02]} />
+      {BATTEN_X.map((x) => (
+        <Trim key={x} args={[0.05, ROOM_HEIGHT, 0.02]} position={[x, ROOM_HEIGHT / 2, WALL_Z + 0.01]} />
+      ))}
+
+      {/* Wool rug with a border */}
+      <group rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.003, 1.65]}>
+        <mesh receiveShadow>
+          <planeGeometry args={[4.6, 2.3]} />
+          <meshStandardMaterial color="#4c1f22" roughness={0.97} />
+        </mesh>
+        <mesh position={[0, 0, 0.001]} receiveShadow>
+          <planeGeometry args={[4.36, 2.06]} />
+          <meshStandardMaterial color="#a88a58" roughness={0.97} />
+        </mesh>
+        <mesh position={[0, 0, 0.002]} receiveShadow>
+          <planeGeometry args={[4.3, 2]} />
+          <meshStandardMaterial color="#5e2a2b" roughness={0.97} />
+        </mesh>
       </group>
 
-      {/* 3D Framed Poster on the Back Wall (Shadows disabled, using shared woodMaterial) */}
-      <group position={[1.3, 1.75, -0.98]}>
-        {/* Poster Frame (Walnut wood) */}
-        <RoundedBox args={[1.05, 1.35, 0.02]} position={[0, 0, 0]} radius={0.006} smoothness={3} material={woodMaterial} />
+      {/* Antique storage trunk below the poster */}
+      <group position={[2.75, 0, 0.35]} rotation={[0, -0.18, 0]}>
+        <RoundedBox args={[0.85, 0.5, 0.5]} position={[0, 0.25, 0]} radius={0.012} smoothness={3} receiveShadow castShadow material={woodMaterial} />
+        {[-0.26, 0.26].map((x) => (
+          <mesh key={x} position={[x, 0.25, 0]}>
+            <boxGeometry args={[0.025, 0.51, 0.51]} />
+            <meshStandardMaterial color="#a6894b" metalness={0.8} roughness={0.3} />
+          </mesh>
+        ))}
+        <RoundedBox args={[0.34, 0.05, 0.24]} position={[0.02, 0.525, -0.02]} rotation={[0, 0.1, 0]} radius={0.003} castShadow>
+          <meshStandardMaterial color="#4f1e1e" roughness={0.7} />
+        </RoundedBox>
+        <RoundedBox args={[0.28, 0.045, 0.2]} position={[0, 0.572, -0.01]} rotation={[0, -0.15, 0]} radius={0.003} castShadow>
+          <meshStandardMaterial color="#1a3d24" roughness={0.7} />
+        </RoundedBox>
+      </group>
 
-        {/* Poster Paper Background */}
-        <mesh position={[0, 0, 0.012]}>
+      {/* Framed poster on the back wall */}
+      <group position={[2.75, 1.9, WALL_Z + 0.02]}>
+        <RoundedBox args={[1.05, 1.35, 0.03]} radius={0.006} smoothness={3} castShadow material={woodMaterial} />
+        <mesh position={[0, 0, 0.017]}>
           <planeGeometry args={[0.97, 1.27]} />
-          <meshStandardMaterial color="#fcfaf2" roughness={0.9} />
+          <meshStandardMaterial color="#e9e2cf" roughness={0.9} />
         </mesh>
-
-        {/* Title: THE ARCHIVE */}
-        <Text
-          position={[0, 0.32, 0.015]}
-          fontSize={0.082}
-          color="#2a1e08"
-          anchorX="center"
-          anchorY="middle"
-          font="https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5.0.21/files/playfair-display-latin-400-normal.woff"
-          letterSpacing={0.12}
-        >
+        <Text position={[0, 0.2, 0.02]} fontSize={0.082} color="#2a1e08" anchorX="center" anchorY="middle" font={ARCHIVE_FONT} letterSpacing={0.1}>
           THE ARCHIVE
         </Text>
-
-        {/* Thin Gold Separator Line */}
-        <mesh position={[0, 0.12, 0.015]}>
-          <boxGeometry args={[0.65, 0.005, 0.001]} />
-          <meshStandardMaterial color="#a6894b" metalness={0.8} roughness={0.2} />
+        <mesh position={[0, 0.06, 0.02]}>
+          <boxGeometry args={[0.6, 0.004, 0.001]} />
+          <meshStandardMaterial color="#8b7238" metalness={0.6} roughness={0.4} />
         </mesh>
-
-        {/* Subtitle: A collection of my journey */}
         <Text
-          position={[0, -0.16, 0.015]}
+          position={[0, -0.1, 0.02]}
           fontSize={0.064}
           color="#5a4c3e"
           anchorX="center"
           anchorY="middle"
           maxWidth={0.85}
           textAlign="center"
-          font="https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5.0.21/files/playfair-display-latin-400-normal.woff"
-          letterSpacing={0.06}
+          font={ARCHIVE_FONT}
           lineHeight={1.4}
         >
-          {"A COLLECTION OF\nMY JOURNEY"}
+          {"A collection of\nmy journey"}
         </Text>
       </group>
 
-      {/* Standing Floor Lamp on the right side of the room (Shadows disabled, lamp bulb pointLight removed for performance) */}
-      <group position={[2.5, -0.1, 1]}>
-        {/* Lamp Base (on the floor) */}
-        <mesh position={[0, 0.05, 0]}>
-          <cylinderGeometry args={[0.3, 0.35, 0.1, 32]} />
-          <meshStandardMaterial color="#1e1b18" roughness={0.8} metalness={0.2} />
+      {/* Standing floor lamp: the warm key light for the room */}
+      <group position={[-2.75, 0, 0.55]}>
+        <mesh position={[0, 0.025, 0]} castShadow>
+          <cylinderGeometry args={[0.2, 0.23, 0.05, 32]} />
+          <meshStandardMaterial color="#6d5a2f" roughness={0.35} metalness={0.8} />
         </mesh>
-        {/* Lamp Stem (polished antique brass) */}
-        <mesh position={[0, 1.55, 0]}>
-          <cylinderGeometry args={[0.02, 0.02, 3, 16]} />
-          <meshStandardMaterial color="#b59a57" roughness={0.2} metalness={0.9} />
+        <mesh position={[0, 1.05, 0]} castShadow>
+          <cylinderGeometry args={[0.014, 0.014, 2.05, 16]} />
+          <meshStandardMaterial color="#b59a57" roughness={0.3} metalness={0.85} />
         </mesh>
-        {/* Lamp Shade (Dark fabric outside, gold inside) */}
-        <mesh position={[0, 3.2, 0]}>
-          <coneGeometry args={[0.5, 0.7, 32]} />
-          <meshStandardMaterial color="#1c1613" roughness={0.8} metalness={0.1} />
+        <mesh position={[0, 2.2, 0]}>
+          <cylinderGeometry args={[0.2, 0.36, 0.42, 32, 1, true]} />
+          <meshStandardMaterial color="#f1d6aa" emissive="#ffb56b" emissiveIntensity={1.5} roughness={0.8} side={THREE.DoubleSide} />
         </mesh>
+        <pointLight position={[0, 2.1, 0.15]} intensity={10} distance={8} decay={1.6} color="#ffc488" />
       </group>
 
-      {/* Ground Reflection/Shadow for objects */}
-      <ContactShadows position={[0, -0.09, 0]} opacity={0.7} scale={15} blur={2.5} far={4} frames={1} resolution={512} />
+      <ContactShadows position={[0, 0.008, 0]} opacity={0.55} scale={14} blur={2.5} far={3} frames={1} resolution={512} />
     </>
   );
 }
