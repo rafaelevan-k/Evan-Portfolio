@@ -3,6 +3,8 @@ import type { BookCategory } from "@/lib/archiveBooks";
 // The room group sits this far below world origin; book Y values below are in room space
 export const ROOM_OFFSET_Y = -1;
 export const ARCHIVE_FONT = "/fonts/playfair-display-latin-400-normal.woff";
+// With frameloop="demand" the clock keeps running while idle, so the first frame's delta is the whole idle time
+export const MAX_FRAME_DELTA = 0.1;
 
 export const SHELF_WIDTH = 3.6;
 export const SHELF_HEIGHT = 3.1;
@@ -56,7 +58,7 @@ export interface FillerBooks {
 const FILLER_COLORS = ["#37201c", "#1f2a38", "#2a3528", "#3f2f22", "#29282b", "#544429", "#28393a"];
 const BAYS: [number, number][] = [[-1.77, -0.625], [-0.575, 0.575], [0.625, 1.77]];
 
-function seededRandom(seed: number) {
+export function seededRandom(seed: number) {
   let state = seed;
   return () => {
     state = (state * 16807) % 2147483647;

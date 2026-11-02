@@ -33,13 +33,17 @@ function ArchiveContent({ selectedBook, setSelectedBook, focusedBook, onBookOpen
   floorTexture.wrapT = THREE.RepeatWrapping;
   floorTexture.repeat.set(4, 4);
   floorTexture.colorSpace = THREE.SRGBColorSpace;
+  floorTexture.anisotropy = 8;
 
   // Construct shared MeshStandardMaterials for wood and floor to save draw calls
+  // Each texture doubles as its own bump map, so the grain catches the lamp light
   const woodMaterial = useMemo(() => {
     return new THREE.MeshStandardMaterial({
       map: woodTexture,
+      bumpMap: woodTexture,
+      bumpScale: 2,
       color: "#f0d2b4", // Lifts the dark walnut texture so the shelf separates from the wall
-      roughness: 0.55,
+      roughness: 0.5,
       metalness: 0.05,
     });
   }, [woodTexture]);
@@ -47,8 +51,10 @@ function ArchiveContent({ selectedBook, setSelectedBook, focusedBook, onBookOpen
   const floorMaterial = useMemo(() => {
     return new THREE.MeshStandardMaterial({
       map: floorTexture,
+      bumpMap: floorTexture,
+      bumpScale: 2,
       color: "#b08a68", // Warm teak/oak tint for floor planks
-      roughness: 0.6,
+      roughness: 0.45,
       metalness: 0.05,
     });
   }, [floorTexture]);

@@ -6,11 +6,13 @@ import { RoundedBox, Text } from "@react-three/drei";
 import { BookItem } from "@/components/archive/BookItem";
 import type { BookType } from "@/app/archive/page";
 import * as THREE from "three";
+import { getLeatherBump } from "./proceduralTextures";
 import {
   ARCHIVE_FONT,
   HERO_BOOKS,
   HERO_DEPTH,
   LEVEL_CLEAR_HEIGHT,
+  MAX_FRAME_DELTA,
   PULL_OUT_Z,
   SHELF_DEPTH,
   SHELF_HEIGHT,
@@ -85,7 +87,7 @@ function BookLight({ hovered, selected }: { hovered: HeroBook | undefined; selec
 
     const target = selected ? 1.4 : hovered ? 0.2 : 0;
     if (Math.abs(light.intensity - target) > 0.01) {
-      light.intensity = THREE.MathUtils.damp(light.intensity, target, 6, delta);
+      light.intensity = THREE.MathUtils.damp(light.intensity, target, 6, Math.min(delta, MAX_FRAME_DELTA));
       state.invalidate();
     } else {
       light.intensity = target;
@@ -132,7 +134,7 @@ function FillerBooks() {
   return (
     <>
       <InstancedBoxes items={books.covers} castShadow>
-        <meshStandardMaterial roughness={0.8} metalness={0.02} />
+        <meshStandardMaterial roughness={0.7} metalness={0.02} bumpMap={getLeatherBump()} bumpScale={0.35} />
       </InstancedBoxes>
       <InstancedBoxes items={books.pages}>
         <meshStandardMaterial color="#c9bea6" roughness={0.95} />

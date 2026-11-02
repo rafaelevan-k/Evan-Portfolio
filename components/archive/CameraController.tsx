@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import type { BookType } from "@/app/archive/page";
-import { HERO_BOOKS, ROOM_OFFSET_Y, SHELF_WIDTH } from "./shelfLayout";
+import { HERO_BOOKS, MAX_FRAME_DELTA, ROOM_OFFSET_Y, SHELF_WIDTH } from "./shelfLayout";
 
 interface CameraControllerProps {
   selectedBook: BookType;
@@ -50,7 +50,7 @@ export function CameraController({ selectedBook }: CameraControllerProps) {
 
     if (isAnimating) {
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const alpha = reduceMotion ? 1 : 1 - Math.exp(-DAMPING * delta);
+      const alpha = reduceMotion ? 1 : 1 - Math.exp(-DAMPING * Math.min(delta, MAX_FRAME_DELTA));
       camera.position.lerp(targetPos.current, alpha);
       lookAt.current.lerp(targetLook.current, alpha);
       camera.fov = THREE.MathUtils.lerp(camera.fov, targetFov, alpha);

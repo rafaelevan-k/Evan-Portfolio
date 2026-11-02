@@ -177,9 +177,8 @@ export default function ArchivePage() {
         {!hasOpenedBook && (
           <motion.p
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.4, delay: 0.8 }}
+            animate={{ opacity: 1, transition: { duration: 0.4, delay: 0.8 } }}
+            exit={{ opacity: 0, transition: { duration: 0.2 } }}
             className="pointer-events-none absolute bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 z-20 whitespace-nowrap px-4 py-2 rounded-full bg-black/55 border border-white/15 text-sm text-white/90 backdrop-blur-md"
           >
             Choose a bright book to open it

@@ -2,6 +2,7 @@
 
 import { ContactShadows, RoundedBox, Text } from "@react-three/drei";
 import * as THREE from "three";
+import { getPaintBump, getRugTexture } from "./proceduralTextures";
 import { ARCHIVE_FONT } from "./shelfLayout";
 
 interface RoomEnvironmentProps {
@@ -37,7 +38,7 @@ export function RoomEnvironment({ woodMaterial, floorMaterial }: RoomEnvironment
       {/* Painted walls and ceiling, so the room never ends inside the frame */}
       <mesh position={[0, ROOM_HEIGHT / 2, WALL_Z]} receiveShadow>
         <planeGeometry args={[ROOM_HALF_WIDTH * 2, ROOM_HEIGHT]} />
-        <meshStandardMaterial color={WALL_COLOR} roughness={0.85} />
+        <meshStandardMaterial color={WALL_COLOR} roughness={0.8} bumpMap={getPaintBump()} bumpScale={0.15} />
       </mesh>
       {[-1, 1].map((side) => (
         <mesh key={side} position={[side * ROOM_HALF_WIDTH, ROOM_HEIGHT / 2, WALL_Z + ROOM_DEPTH / 2]} rotation={[0, -side * Math.PI / 2, 0]}>
@@ -58,21 +59,11 @@ export function RoomEnvironment({ woodMaterial, floorMaterial }: RoomEnvironment
         <Trim key={x} args={[0.05, ROOM_HEIGHT, 0.02]} position={[x, ROOM_HEIGHT / 2, WALL_Z + 0.01]} />
       ))}
 
-      {/* Wool rug with a border */}
-      <group rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.003, 1.65]}>
-        <mesh receiveShadow>
-          <planeGeometry args={[4.6, 2.3]} />
-          <meshStandardMaterial color="#4c1f22" roughness={0.97} />
-        </mesh>
-        <mesh position={[0, 0, 0.001]} receiveShadow>
-          <planeGeometry args={[4.36, 2.06]} />
-          <meshStandardMaterial color="#a88a58" roughness={0.97} />
-        </mesh>
-        <mesh position={[0, 0, 0.002]} receiveShadow>
-          <planeGeometry args={[4.3, 2]} />
-          <meshStandardMaterial color="#5e2a2b" roughness={0.97} />
-        </mesh>
-      </group>
+      {/* Woven wool rug */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.003, 1.65]} receiveShadow>
+        <planeGeometry args={[4.6, 2.3]} />
+        <meshStandardMaterial map={getRugTexture()} roughness={0.97} />
+      </mesh>
 
       {/* Antique storage trunk below the poster */}
       <group position={[2.75, 0, 0.35]} rotation={[0, -0.18, 0]}>

@@ -6,7 +6,8 @@ import { Text, RoundedBox, Html } from "@react-three/drei";
 import * as THREE from "three";
 import type { BookType } from "@/app/archive/page";
 import { archiveSerif } from "./archiveFont";
-import { ARCHIVE_FONT, HERO_DEPTH, HERO_HEIGHT, HERO_WIDTH, PULL_OUT_Z, type HeroBook } from "./shelfLayout";
+import { getLeatherBump } from "./proceduralTextures";
+import { ARCHIVE_FONT, HERO_DEPTH, HERO_HEIGHT, HERO_WIDTH, MAX_FRAME_DELTA, PULL_OUT_Z, type HeroBook } from "./shelfLayout";
 
 interface BookItemProps {
   book: HeroBook;
@@ -30,6 +31,16 @@ const READER_AT = 1.4;
 const CLOSE_SPEED = 1.6;
 const COVER_OPEN_ANGLE = -2.7;
 
+const FRAME_INSET = 0.028;
+const FRAME_HEIGHT = HERO_HEIGHT - FRAME_INSET * 2;
+const FRAME_WIDTH = HERO_DEPTH - FRAME_INSET * 2;
+const COVER_FRAME: { args: [number, number, number]; position: [number, number] }[] = [
+  { args: [0.0006, 0.004, FRAME_WIDTH], position: [FRAME_HEIGHT / 2, 0] },
+  { args: [0.0006, 0.004, FRAME_WIDTH], position: [-FRAME_HEIGHT / 2, 0] },
+  { args: [0.0006, FRAME_HEIGHT, 0.004], position: [0, FRAME_WIDTH / 2] },
+  { args: [0.0006, FRAME_HEIGHT, 0.004], position: [0, -FRAME_WIDTH / 2] },
+];
+
 function phase(time: number, start: number, end: number) {
   const x = THREE.MathUtils.clamp((time - start) / (end - start), 0, 1);
   return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
@@ -47,11 +58,14 @@ export function BookItem({ book, hovered, selectedBook, setSelectedBook, onHover
   const isSelected = selectedBook === type;
   const isHighlighted = hovered && !selectedBook;
   const [baseX, baseY, baseZ] = position;
+  const leather = { roughness: 0.48, metalness: 0.05, bumpMap: getLeatherBump(), bumpScale: 0.35 };
 
-  useFrame((state, delta) => {
+  useFrame((state, frameDelta) => {
     const group = groupRef.current;
     const cover = coverRef.current;
     if (!group || !cover) return;
+
+    const delta = Math.min(frameDelta, MAX_FRAME_DELTA);
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const targetTime = isSelected ? OPEN_END : 0;
@@ -126,8 +140,15 @@ export function BookItem({ book, hovered, selectedBook, setSelectedBook, onHover
         castShadow
         receiveShadow
       >
-        <meshStandardMaterial color={color} roughness={0.55} metalness={0.05} />
+        <meshStandardMaterial color={color} {...leather} />
       </RoundedBox>
+
+      {/* Raised bands across the spine, as on a hand-bound book */}
+      {[-0.225, 0.225].map((y) => (
+        <RoundedBox key={y} args={[HERO_WIDTH + 0.002, 0.018, 0.024]} position={[0, y, HERO_DEPTH / 2 + 0.002]} radius={0.006} smoothness={3}>
+          <meshStandardMaterial color={color} {...leather} />
+        </RoundedBox>
+      ))}
 
       {/* 2. Back Cover */}
       <RoundedBox
@@ -138,7 +159,7 @@ export function BookItem({ book, hovered, selectedBook, setSelectedBook, onHover
         castShadow
         receiveShadow
       >
-        <meshStandardMaterial color={color} roughness={0.55} metalness={0.05} />
+        <meshStandardMaterial color={color} {...leather} />
       </RoundedBox>
 
       {/* 3. Front Cover, hinged at the spine */}
@@ -151,8 +172,15 @@ export function BookItem({ book, hovered, selectedBook, setSelectedBook, onHover
           castShadow
           receiveShadow
         >
-          <meshStandardMaterial color={color} roughness={0.55} metalness={0.05} />
+          <meshStandardMaterial color={color} {...leather} />
         </RoundedBox>
+        {/* Gold tooled frame on the cover */}
+        {COVER_FRAME.map(({ args, position: offset }, index) => (
+          <mesh key={index} position={[0.0043, offset[0], offset[1] - HERO_DEPTH / 2]}>
+            <boxGeometry args={args} />
+            <meshStandardMaterial color={GOLD} metalness={0.9} roughness={0.3} emissive="#7a5a10" emissiveIntensity={0.2} />
+          </mesh>
+        ))}
         {/* Endpaper, seen once the cover is open */}
         <mesh position={[-0.0045, 0, -HERO_DEPTH / 2]} rotation={[0, -Math.PI / 2, 0]}>
           <planeGeometry args={[HERO_DEPTH - 0.02, HERO_HEIGHT - 0.02]} />
@@ -161,7 +189,7 @@ export function BookItem({ book, hovered, selectedBook, setSelectedBook, onHover
         <Text
           position={[0.0045, 0.08, -HERO_DEPTH / 2]}
           rotation={[0, Math.PI / 2, 0]}
-          fontSize={0.038}
+          fontSize={0.033}
           maxWidth={HERO_DEPTH - 0.08}
           textAlign="center"
           color={GOLD}
