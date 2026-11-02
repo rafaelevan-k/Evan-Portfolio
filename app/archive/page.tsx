@@ -1,11 +1,19 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useState, useEffect } from "react";
+import { useCallback, useState, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { MobileArchiveFallback } from "@/components/archive/MobileArchiveFallback";
+import { HERO_BOOKS } from "@/components/archive/shelfLayout";
+import { archiveBooks, type BookCategory } from "@/lib/archiveBooks";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Download } from "lucide-react";
+
+const ROOM_BUTTON_CLASS =
+  "absolute top-6 md:top-10 z-40 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/45 border border-white/20 text-white/90 text-xs font-medium tracking-widest uppercase hover:bg-black/65 hover:text-white transition-colors backdrop-blur-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#e5c158]";
+
+// Tab order follows the shelf from top to bottom
+const BOOKS_TOP_DOWN = [...HERO_BOOKS].reverse();
 
 // The Loading Component with sequence texts
 function ArchiveLoader() {
@@ -54,11 +62,25 @@ export default function ArchivePage() {
   // The reader mounts on selection so PDFs load during the 3D opening, and shows once the cover is open
   const [isReaderVisible, setIsReaderVisible] = useState(false);
   const [isMobile, setIsMobile] = useState<boolean | null>(null);
+  const [focusedBook, setFocusedBook] = useState<BookCategory | null>(null);
+  const [hasOpenedBook, setHasOpenedBook] = useState(false);
+  const bookButtonsRef = useRef<Partial<Record<BookCategory, HTMLButtonElement | null>>>({});
+  const keyboardOpenedBookRef = useRef<BookCategory | null>(null);
 
-  const closeBook = () => {
+  const selectBook = (book: BookType) => {
+    setSelectedBook(book);
+    if (book) setHasOpenedBook(true);
+  };
+
+  const closeBook = useCallback(() => {
     setSelectedBook(null);
     setIsReaderVisible(false);
-  };
+    // Keyboard users land back on the book they opened
+    if (keyboardOpenedBookRef.current) {
+      bookButtonsRef.current[keyboardOpenedBookRef.current]?.focus();
+      keyboardOpenedBookRef.current = null;
+    }
+  }, []);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -71,13 +93,12 @@ export default function ArchivePage() {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && selectedBook) {
-        setSelectedBook(null);
-        setIsReaderVisible(false);
+        closeBook();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedBook]);
+  }, [selectedBook, closeBook]);
 
   // Don't render until we know the screen size to prevent flash
   if (isMobile === null) return <ArchiveLoader />;
@@ -91,9 +112,31 @@ export default function ArchivePage() {
       {/* 3D Environment */}
       <ArchiveScene
         selectedBook={selectedBook}
-        setSelectedBook={setSelectedBook}
+        setSelectedBook={selectBook}
+        focusedBook={focusedBook}
         onBookOpened={() => setIsReaderVisible(true)}
       />
+
+      {/* The canvas can't take focus, so hidden buttons drive the same books for keyboards and screen readers */}
+      <nav aria-label="Books on the shelf" className="sr-only">
+        {BOOKS_TOP_DOWN.map(({ type }) => (
+          <button
+            key={type}
+            ref={(button) => {
+              bookButtonsRef.current[type] = button;
+            }}
+            tabIndex={selectedBook ? -1 : 0}
+            onFocus={() => setFocusedBook(type)}
+            onBlur={() => setFocusedBook(null)}
+            onClick={() => {
+              keyboardOpenedBookRef.current = type;
+              selectBook(type);
+            }}
+          >
+            Open {archiveBooks[type].title}
+          </button>
+        ))}
+      </nav>
 
       {/* Vignette that pulls the eye toward the shelf */}
       <div className="pointer-events-none absolute inset-0 z-10 bg-[radial-gradient(ellipse_at_center,_transparent_55%,_rgba(0,0,0,0.5)_100%)]" />
@@ -114,16 +157,35 @@ export default function ArchivePage() {
       {/* Subtle Back Button (visible when no book is selected) */}
       <AnimatePresence>
         {!selectedBook && (
-          <Link
-            href="/"
-            className="absolute top-6 left-6 md:top-10 md:left-10 z-40 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/45 border border-white/20 text-white/90 text-xs font-medium tracking-widest uppercase hover:bg-black/65 hover:text-white transition-colors backdrop-blur-md"
-          >
+          <Link href="/" className={`${ROOM_BUTTON_CLASS} left-6 md:left-10`}>
             <ArrowLeft className="w-4 h-4" />
             Return
           </Link>
         )}
       </AnimatePresence>
-      
+
+      {/* The CV stays one click away for visitors who came only for that */}
+      {!selectedBook && (
+        <a href={archiveBooks.cv.documents[0].path} download className={`${ROOM_BUTTON_CLASS} right-6 md:right-10`}>
+          <Download className="w-4 h-4" />
+          Download CV
+        </a>
+      )}
+
+      {/* First-visit hint, gone once a book has been opened */}
+      <AnimatePresence>
+        {!hasOpenedBook && (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4, delay: 0.8 }}
+            className="pointer-events-none absolute bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 z-20 whitespace-nowrap px-4 py-2 rounded-full bg-black/55 border border-white/15 text-sm text-white/90 backdrop-blur-md"
+          >
+            Choose a bright book to open it
+          </motion.p>
+        )}
+      </AnimatePresence>
 
     </div>
   );

@@ -155,6 +155,7 @@ export function BookSpreadReader({ selectedBook, onClose, visible = true }: Book
       aria-modal="true"
       aria-label={bookConfig.title}
       aria-hidden={!visible}
+      inert={!visible}
       initial={{ opacity: 0 }}
       animate={{ opacity: visible ? 1 : 0 }}
       exit={{ opacity: 0 }}

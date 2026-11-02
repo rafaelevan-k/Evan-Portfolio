@@ -25,6 +25,7 @@ import {
 interface BookshelfProps {
   selectedBook: BookType;
   setSelectedBook: (book: BookType) => void;
+  focusedBook: BookType;
   onBookOpened: () => void;
   woodMaterial: THREE.Material;
 }
@@ -82,7 +83,7 @@ function BookLight({ hovered, selected }: { hovered: HeroBook | undefined; selec
       light.position.set(hovered.position[0], hovered.position[1], hovered.position[2] + HERO_DEPTH / 2 + 0.35);
     }
 
-    const target = selected ? 1.4 : hovered ? 0.5 : 0;
+    const target = selected ? 1.4 : hovered ? 0.2 : 0;
     if (Math.abs(light.intensity - target) > 0.01) {
       light.intensity = THREE.MathUtils.damp(light.intensity, target, 6, delta);
       state.invalidate();
@@ -143,8 +144,10 @@ function FillerBooks() {
   );
 }
 
-export function Bookshelf({ selectedBook, setSelectedBook, onBookOpened, woodMaterial }: BookshelfProps) {
-  const [hoveredType, setHoveredType] = useState<HeroBook["type"] | null>(null);
+export function Bookshelf({ selectedBook, setSelectedBook, focusedBook, onBookOpened, woodMaterial }: BookshelfProps) {
+  const [pointerBook, setPointerBook] = useState<HeroBook["type"] | null>(null);
+  // Keyboard focus lifts a book the same way the pointer does
+  const hoveredType = pointerBook ?? focusedBook;
   const hoveredBook = HERO_BOOKS.find((book) => book.type === hoveredType);
   const activeBook = HERO_BOOKS.find((book) => book.type === selectedBook);
 
@@ -236,7 +239,7 @@ export function Bookshelf({ selectedBook, setSelectedBook, onBookOpened, woodMat
             hovered={hoveredType === book.type}
             selectedBook={selectedBook}
             setSelectedBook={setSelectedBook}
-            onHoverChange={setHoveredType}
+            onHoverChange={setPointerBook}
             onBookOpened={onBookOpened}
           />
         </group>

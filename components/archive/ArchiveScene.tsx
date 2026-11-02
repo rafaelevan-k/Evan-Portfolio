@@ -13,11 +13,12 @@ import type { BookType } from "@/app/archive/page";
 interface ArchiveSceneProps {
   selectedBook: BookType;
   setSelectedBook: (book: BookType) => void;
+  focusedBook: BookType;
   onBookOpened: () => void;
 }
 
 // Inner wrapper component to run inside the Suspense boundary so texture loading works
-function ArchiveContent({ selectedBook, setSelectedBook, onBookOpened }: ArchiveSceneProps) {
+function ArchiveContent({ selectedBook, setSelectedBook, focusedBook, onBookOpened }: ArchiveSceneProps) {
   // Load optimized WebP wood and floor textures
   const woodTexture = useTexture("/archive_wood_wall.webp");
   const floorTexture = useTexture("/archive_wood_floor.webp");
@@ -57,6 +58,7 @@ function ArchiveContent({ selectedBook, setSelectedBook, onBookOpened }: Archive
       <Bookshelf 
         selectedBook={selectedBook} 
         setSelectedBook={setSelectedBook}
+        focusedBook={focusedBook}
         onBookOpened={onBookOpened}
         woodMaterial={woodMaterial}
       />
@@ -68,7 +70,7 @@ function ArchiveContent({ selectedBook, setSelectedBook, onBookOpened }: Archive
   );
 }
 
-export default function ArchiveScene({ selectedBook, setSelectedBook, onBookOpened }: ArchiveSceneProps) {
+export default function ArchiveScene({ selectedBook, setSelectedBook, focusedBook, onBookOpened }: ArchiveSceneProps) {
   return (
     <div className="absolute inset-0 z-0">
       <Canvas 
@@ -105,7 +107,7 @@ export default function ArchiveScene({ selectedBook, setSelectedBook, onBookOpen
         >
           <CameraController selectedBook={selectedBook} />
 
-          <ArchiveContent selectedBook={selectedBook} setSelectedBook={setSelectedBook} onBookOpened={onBookOpened} />
+          <ArchiveContent selectedBook={selectedBook} setSelectedBook={setSelectedBook} focusedBook={focusedBook} onBookOpened={onBookOpened} />
 
           {/* Local reflections for brass and leather, rendered once without any network request */}
           <Environment resolution={64} frames={1} environmentIntensity={0.3}>
