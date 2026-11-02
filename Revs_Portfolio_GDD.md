@@ -11,7 +11,7 @@ Visitors board a pixel-art train and explore a developer's portfolio by walking 
 - Support reduced motion, mute, skip tutorial, quick navigation, and accessible HTML alternative.
 
 ## Scene flow
-BootScene -> PreloadScene -> StationScene -> TransitionScene -> TrainScene. UIScene overlays active world scenes. React owns detail dialogs and navigation; Phaser owns game simulation.
+BootScene -> PreloadScene -> StationScene -> TrainScene. UIScene overlays active world scenes and plays the transition between them. React owns detail dialogs and navigation; Phaser owns game simulation.
 
 ## StationScene
 Spawn on platform. Conductor NPC teaches movement and interaction. Interact with train entrance to transition. Signboard opens quick navigation.

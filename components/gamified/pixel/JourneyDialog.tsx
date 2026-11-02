@@ -15,6 +15,7 @@ type Props = {
   emailAddress: string;
   whatsappLink: string;
   visited: CarriageId[];
+  className?: string;
   onClose: () => void;
   onTravel: (destination: CarriageId | "station") => void;
   onExit: () => void;
@@ -30,7 +31,7 @@ function ExternalLink({ href, children, download }: { href: string; children: Re
 }
 
 export function JourneyDialog(props: Props) {
-  const { panel, projects, certifications, emailAddress, whatsappLink, visited, onClose, onTravel, onExit, onEnterArchive } = props;
+  const { panel, projects, certifications, emailAddress, whatsappLink, visited, className, onClose, onTravel, onExit, onEnterArchive } = props;
   const ref = useRef<HTMLDialogElement>(null);
   const project = panel.startsWith("project:") ? projects[Number(panel.split(":")[1])] : null;
   const skill = panel.startsWith("skill:") ? skillCategories[Number(panel.split(":")[1])] : null;
@@ -42,7 +43,7 @@ export function JourneyDialog(props: Props) {
   }, []);
 
   return (
-    <dialog ref={ref} className={`journey-dialog ${panel === "guide" ? "journey-dialog-guide" : ""}`} aria-labelledby="journey-dialog-title" onCancel={(event) => { event.preventDefault(); onClose(); }} onClick={(event) => {
+    <dialog ref={ref} className={`journey-dialog ${panel === "guide" ? "journey-dialog-guide" : ""} ${className ?? ""}`} aria-labelledby="journey-dialog-title" onCancel={(event) => { event.preventDefault(); onClose(); }} onClick={(event) => {
       if (event.target !== event.currentTarget) return;
       const rect = event.currentTarget.getBoundingClientRect();
       if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) onClose();
@@ -58,9 +59,9 @@ export function JourneyDialog(props: Props) {
           <p>Welcome aboard. This is Rafael&apos;s portfolio, told through a little pixel train. Wander through five carriages and stop at anything that catches your eye.</p>
           <div className="journey-guide-grid">
             <div><span className="journey-key-art" aria-hidden="true">W A S D</span><h3>Take a walk</h3><p>WASD or arrow keys. On touch screens, tap the floor or use the direction pad.</p></div>
-            <div><span className="journey-key-art" aria-hidden="true">E / TAP</span><h3>Take a closer look</h3><p>Walk near a labeled object and press E. Tap an object to walk to it and open its notes.</p></div>
+            <div><span className="journey-key-art" aria-hidden="true">E / TAP</span><h3>Take a closer look</h3><p>Walk up to anything with a gold marker and press E. Or click it, and your traveler will walk over and open its notes.</p></div>
           </div>
-          <p className="journey-note">No quests. No locked doors. The route map takes you straight to any carriage, and “Read portfolio” returns to the regular site.</p>
+          <p className="journey-note">No quests. No locked doors. Everything you open earns a stamp on your ticket, just for fun. The route map takes you straight to any carriage, and “Read portfolio” returns to the regular site.</p>
           <div className="journey-actions"><button type="button" className="journey-button-primary" onClick={onClose}>Explore the platform <ArrowRight size={17} /></button><button type="button" className="journey-button-text" onClick={() => onTravel("about")}>Skip tutorial &amp; board</button></div>
         </>}
         {panel === "navigation" && <>

@@ -108,7 +108,8 @@ test("desktop framing fits the whole carriage below the location panel", () => {
     const layout = world.cameraLayout("train", 1440, height);
     assert.equal(layout.desktopInterior, true);
     assert.ok(bodyHeight * layout.zoom <= height - 76);
-    assert.ok(layout.zoom <= 2);
+    assert.ok(layout.zoom <= 3);
+    if (layout.zoom >= 2) assert.ok(Number.isInteger(layout.zoom), "large views keep whole-pixel scaling");
     const top = height / 2 + (world.CAR_TOP * world.TILE - layout.centerY) * layout.zoom;
     assert.ok(top >= 54);
     assert.ok(top + bodyHeight * layout.zoom <= height - 22);

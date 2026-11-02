@@ -2,7 +2,7 @@
 
 `countryside.webp` is the runtime panorama (720 × 240, 54 KB). `countryside.png` retains the original generated image. The panorama loads only after Game Mode opens. Characters, tiles, and furnishings are generated on a 16-pixel grid by `components/gamified/pixel/pixelAssets.ts`, so animation frames and collision scale remain consistent.
 
-Train interiors bake the panorama into their window panes rather than drawing it behind the entire world. Five opaque, cached 384 × 280 carriage bitmaps include detailed wood planks, wall trim, woven carpets, and static shading. A shared 64 × 64 connector closes the passages. No extra raster downloads or graphics dependencies are needed; the new texture budget is about 2.1 MiB of raw RGBA pixels.
+Train interiors bake the panorama into their window panes rather than drawing it behind the entire world. Five opaque, cached 384 × 312 carriage bitmaps include themed floors, wall art, woven carpets, and static shading, and small tiling sprites scroll the panorama over the baked panes. A shared 64 × 64 connector closes the passages. No extra raster downloads or graphics dependencies are needed; the carriage texture budget is about 2.4 MiB of raw RGBA pixels. The Pixelify Sans interface font is loaded through `next/font`.
 
 The panorama was generated with the built-in ImageGen tool, then exported as a smaller nearest-neighbor WebP for delivery. Final generation prompt:
 
