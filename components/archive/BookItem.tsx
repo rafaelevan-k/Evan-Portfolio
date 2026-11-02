@@ -102,7 +102,10 @@ export function BookItem({ book, hovered, selectedBook, setSelectedBook, onHover
       Math.abs(hover - targetHover) > 0.001 ||
       (gold !== null && Math.abs(gold.emissiveIntensity - targetEmissive) > 0.01);
 
-    if (isAnimating) state.invalidate();
+    if (isAnimating) {
+      state.gl.shadowMap.needsUpdate = true;
+      state.invalidate();
+    }
   });
 
   return (

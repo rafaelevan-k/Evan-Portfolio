@@ -1,10 +1,11 @@
 "use client";
 
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { Environment, Html, Lightformer, useTexture } from "@react-three/drei";
-import { Suspense, useMemo } from "react";
+import { Suspense, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { Bookshelf } from "./Bookshelf";
+import { DustMotes } from "./DustMotes";
 import { RoomEnvironment } from "./RoomEnvironment";
 import { CameraController } from "./CameraController";
 import { ROOM_OFFSET_Y } from "./shelfLayout";
@@ -15,6 +16,19 @@ interface ArchiveSceneProps {
   setSelectedBook: (book: BookType) => void;
   focusedBook: BookType;
   onBookOpened: () => void;
+}
+
+// Shadows only change when a book moves, so they are drawn once here and then on request from BookItem
+function InitialShadowPass() {
+  const isDone = useRef(false);
+
+  useFrame((state) => {
+    if (isDone.current) return;
+    isDone.current = true;
+    state.gl.shadowMap.needsUpdate = true;
+  });
+
+  return null;
 }
 
 // Inner wrapper component to run inside the Suspense boundary so texture loading works
@@ -72,6 +86,8 @@ function ArchiveContent({ selectedBook, setSelectedBook, focusedBook, onBookOpen
         woodMaterial={woodMaterial}
         floorMaterial={floorMaterial}
       />
+      <DustMotes selectedBook={selectedBook} />
+      <InitialShadowPass />
     </group>
   );
 }
@@ -86,6 +102,9 @@ export default function ArchiveScene({ selectedBook, setSelectedBook, focusedBoo
         dpr={[1, 2]}
         performance={{ min: 0.5 }}
         gl={{ antialias: true, powerPreference: "high-performance" }}
+        onCreated={({ gl }) => {
+          gl.shadowMap.autoUpdate = false;
+        }}
       >
         <color attach="background" args={["#141a17"]} />
 

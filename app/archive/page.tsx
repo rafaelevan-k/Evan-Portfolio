@@ -14,6 +14,7 @@ const ROOM_BUTTON_CLASS =
 
 // Tab order follows the shelf from top to bottom
 const BOOKS_TOP_DOWN = [...HERO_BOOKS].reverse();
+const READER_FALLBACK_MS = 2500;
 
 // The Loading Component with sequence texts
 function ArchiveLoader() {
@@ -88,6 +89,13 @@ export default function ArchivePage() {
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  // The opening animation normally reveals the reader; this keeps slow devices from waiting on it
+  useEffect(() => {
+    if (!selectedBook) return;
+    const timeout = setTimeout(() => setIsReaderVisible(true), READER_FALLBACK_MS);
+    return () => clearTimeout(timeout);
+  }, [selectedBook]);
 
   // Use Escape key to close book
   useEffect(() => {

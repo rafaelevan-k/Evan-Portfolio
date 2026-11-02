@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef } from "react";
-import { useFrame } from "@react-three/fiber";
+import { useEffect, useRef } from "react";
+import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import type { BookType } from "@/app/archive/page";
 import { HERO_BOOKS, MAX_FRAME_DELTA, ROOM_OFFSET_Y, SHELF_WIDTH } from "./shelfLayout";
@@ -19,10 +19,28 @@ const FRAMED_WIDTH = SHELF_WIDTH + 1;
 // Frame-rate independent smoothing: stays stable on long frames, unlike lerp(a, b, k * delta)
 const DAMPING = 3;
 
+// How far the overview camera drifts with the mouse; the look target stays put, so the room turns gently
+const PARALLAX_X = 0.3;
+const PARALLAX_Y = 0.12;
+
 export function CameraController({ selectedBook }: CameraControllerProps) {
   const lookAt = useRef(new THREE.Vector3(0, 0.55, -0.2));
   const targetPos = useRef(new THREE.Vector3());
   const targetLook = useRef(new THREE.Vector3());
+  const pointer = useRef(new THREE.Vector2());
+  const invalidate = useThree((state) => state.invalidate);
+
+  useEffect(() => {
+    if (selectedBook) return;
+    if (!window.matchMedia("(hover: hover) and (prefers-reduced-motion: no-preference)").matches) return;
+
+    const handlePointerMove = (e: PointerEvent) => {
+      pointer.current.set((e.clientX / window.innerWidth) * 2 - 1, 1 - (e.clientY / window.innerHeight) * 2);
+      invalidate();
+    };
+    window.addEventListener("pointermove", handlePointerMove);
+    return () => window.removeEventListener("pointermove", handlePointerMove);
+  }, [selectedBook, invalidate]);
 
   useFrame((state, delta) => {
     const camera = state.camera as THREE.PerspectiveCamera;
@@ -39,7 +57,7 @@ export function CameraController({ selectedBook }: CameraControllerProps) {
       const halfFovTan = Math.tan(THREE.MathUtils.degToRad(OVERVIEW_FOV / 2));
       const fitDistance = FRAMED_WIDTH / 2 / (halfFovTan * state.viewport.aspect);
       const distance = Math.max(OVERVIEW_DISTANCE, fitDistance);
-      targetPos.current.set(0.75, 0.7, distance);
+      targetPos.current.set(0.75 + pointer.current.x * PARALLAX_X, 0.7 + pointer.current.y * PARALLAX_Y, distance);
       targetLook.current.set(0, 0.55, -0.2);
     }
 
