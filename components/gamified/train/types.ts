@@ -9,6 +9,7 @@ export type GameProject = {
   image: StaticImageData | string;
   tags: string[];
   repoLink?: string;
+  repoLinks?: { label: string; href: string }[];
   liveLink?: string;
   isPrivate?: boolean;
   tone: string;

@@ -71,19 +71,19 @@ export function JourneyDialog(props: Props) {
         </>}
         {panel === "about" && <>
           <div className="journey-profile"><Image src="/foto-profil.webp" alt="Rafael Evan Kristanto" width={148} height={176} sizes="148px" className="journey-portrait" /><div><span className="journey-eyebrow">YOGYAKARTA, INDONESIA</span><h3>Rafael Evan Kristanto</h3><p>Information Systems student and full-stack web developer. I build useful digital products with a sharp frontend eye, full-stack thinking, and deliberate interaction.</p></div></div>
-          <div className="journey-note">From inventory systems and learning platforms to AI assistants, my projects connect technical structure with the people who use it.</div>
+          <div className="journey-note">From a Windows desktop companion and learning platforms to AI assistants, my projects connect technical structure with the people who use it.</div>
           <h3>Education</h3><p><strong>{education.institution}</strong><br />{education.degree} · {education.period}<br />GPA {education.gpa}</p>
           <ExternalLink href={CV_PATH}>Read the full CV</ExternalLink>
         </>}
         {panel === "education" && <>
           <span className="journey-eyebrow">{education.period}</span><h3>{education.institution}</h3><p>{education.degree}<br />GPA {education.gpa}</p>
-          <p>Academic and personal projects put this foundation into practice through learning management systems, inventory tools, and e-catalogs.</p><ExternalLink href={CV_PATH}>Read the education record</ExternalLink>
+          <p>Academic and personal projects put this foundation into practice through learning management systems, a Windows desktop app, and e-catalogs.</p><ExternalLink href={CV_PATH}>Read the education record</ExternalLink>
         </>}
         {project && <>
           <span className="journey-eyebrow">PROJECT {project.number} / {project.role}</span>
-          <div className="journey-project-image"><Image src={project.image} alt={`${project.shortTitle} interface preview`} fill sizes="(max-width: 700px) 90vw, 650px" className="object-contain" /></div>
+          <div className="journey-project-image"><Image src={project.image} alt={`${project.shortTitle} interface preview`} fill unoptimized={typeof project.image === "string" && project.image.endsWith(".gif")} sizes="(max-width: 700px) 90vw, 650px" className="object-contain" /></div>
           <p>{project.description}</p><div className="journey-tags">{project.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
-          <div className="journey-actions">{project.repoLink && <ExternalLink href={project.isPrivate ? `/private-repo?repo=${encodeURIComponent(project.repoLink)}` : project.repoLink}>{project.isPrivate ? "Repository access details" : "View GitHub repository"}</ExternalLink>}{project.liveLink && <ExternalLink href={project.liveLink}>Open live demo</ExternalLink>}</div>
+          <div className="journey-actions">{project.liveLink && <ExternalLink href={project.liveLink}>Open live demo</ExternalLink>}{project.repoLinks && project.repoLinks.length > 1 ? project.repoLinks.map((repo) => <ExternalLink key={repo.href} href={repo.href}>{`${repo.label} repository`}</ExternalLink>) : project.repoLink && <ExternalLink href={project.isPrivate ? `/private-repo?repo=${encodeURIComponent(project.repoLink)}` : project.repoLink}>{project.isPrivate ? "Repository access details" : "View GitHub repository"}</ExternalLink>}</div>
           {!project.repoLink && <p className="journey-note">This project&apos;s repository is not publicly listed. Contact Rafael for more details.</p>}
         </>}
         {panel === "experience" && <><p>Teaching and organizational experience, from Rafael&apos;s existing CV.</p><ol className="journey-timeline">{experiences.map((experience) => <li key={`${experience.title}-${experience.organization}`}><span className="journey-eyebrow">{experience.period} / {experience.category}</span><h3>{experience.title}</h3><strong>{experience.organization}</strong><p>{experience.description}</p></li>)}</ol><ExternalLink href={CV_PATH}>Read the full experience record</ExternalLink></>}

@@ -509,6 +509,7 @@ function WorksStation({ station, projects }: { station: TrainStation; projects: 
                 fill
                 loading="lazy"
                 quality={70}
+                unoptimized={typeof selectedProject.image === "string" && selectedProject.image.endsWith(".gif")}
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, 42vw"
               />
@@ -531,19 +532,32 @@ function WorksStation({ station, projects }: { station: TrainStation; projects: 
                   ))}
                 </div>
 
-                {selectedHref ? (
-                  <a
-                    href={selectedHref}
-                    target={selectedProject.isPrivate ? undefined : "_blank"}
-                    rel={selectedProject.isPrivate ? undefined : "noopener noreferrer"}
-                    aria-label={`View the ${selectedProject.shortTitle} repository${selectedProject.isPrivate ? "" : " in a new tab"}`}
-                    className="group inline-flex min-h-11 items-center gap-2 text-xs font-semibold uppercase tracking-[0.13em] text-[#9f3828] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d94b35] focus-visible:ring-offset-2 focus-visible:ring-offset-[#e5ded1]"
-                  >
-                    View repository <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                  </a>
-                ) : (
-                  <span className="text-xs font-medium text-black/55">Repository details are not published.</span>
-                )}
+                <div className="flex flex-wrap items-center gap-x-5">
+                  {selectedProject.liveLink && (
+                    <a href={selectedProject.liveLink} target="_blank" rel="noopener noreferrer" aria-label={`Open the ${selectedProject.shortTitle} live site in a new tab`} className="group inline-flex min-h-11 items-center gap-2 text-xs font-semibold uppercase tracking-[0.13em] text-[#9f3828] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d94b35] focus-visible:ring-offset-2 focus-visible:ring-offset-[#e5ded1]">
+                      Live <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                    </a>
+                  )}
+                  {selectedProject.repoLinks && selectedProject.repoLinks.length > 1 ? (
+                    selectedProject.repoLinks.map((repo) => (
+                      <a key={repo.href} href={repo.href} target="_blank" rel="noopener noreferrer" aria-label={`View the ${repo.label} repository in a new tab`} className="group inline-flex min-h-11 items-center gap-2 text-xs font-semibold uppercase tracking-[0.13em] text-[#9f3828] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d94b35] focus-visible:ring-offset-2 focus-visible:ring-offset-[#e5ded1]">
+                        {repo.label} repo <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                      </a>
+                    ))
+                  ) : selectedHref ? (
+                    <a
+                      href={selectedHref}
+                      target={selectedProject.isPrivate ? undefined : "_blank"}
+                      rel={selectedProject.isPrivate ? undefined : "noopener noreferrer"}
+                      aria-label={`View the ${selectedProject.shortTitle} repository${selectedProject.isPrivate ? "" : " in a new tab"}`}
+                      className="group inline-flex min-h-11 items-center gap-2 text-xs font-semibold uppercase tracking-[0.13em] text-[#9f3828] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d94b35] focus-visible:ring-offset-2 focus-visible:ring-offset-[#e5ded1]"
+                    >
+                      View repository <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                    </a>
+                  ) : (
+                    <span className="text-xs font-medium text-black/55">Repository details are not published.</span>
+                  )}
+                </div>
               </div>
             </div>
           </article>

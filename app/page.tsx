@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import Image, { type StaticImageData } from "next/image";
 import dynamic from "next/dynamic";
 import projectPortfolioImage from "@/public/project_porto2.webp";
 import { AnimatePresence, MotionConfig, motion, useMotionValue, useMotionValueEvent, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
@@ -28,15 +28,37 @@ const GamifiedPortfolio = dynamic(
   },
 );
 
-const projects = [
+type Project = {
+  title: string;
+  shortTitle: string;
+  number: string;
+  role: string;
+  description: string;
+  image: StaticImageData | string;
+  tags: string[];
+  repoLink?: string;
+  repoLinks?: { label: string; href: string }[];
+  liveLink?: string;
+  isPrivate?: boolean;
+  tone: string;
+};
+
+const projects: Project[] = [
   {
-    title: "Sistem Informasi Inventory",
-    shortTitle: "Inventory System",
+    title: "Lunar",
+    shortTitle: "Lunar",
     number: "01",
     role: "Full-Stack Developer",
-    description: "A multi-user inventory tracking system for university data management and goods monitoring, complete with CRUD, search, filtering, and damaged-goods reporting.",
-    image: "/project_inventory.webp",
-    tags: ["Next.js", "TypeScript", "MySQL"],
+    description: "A Dynamic Island for Windows 11: a pair of living eyes at the top of the screen that opens into media controls, a focus timer, a voice recorder, notes, and on-screen translation, plus a showcase website to meet it before installing.",
+    image: "/project_lunar.gif",
+    tags: ["C# / WPF", "Next.js", "Three.js"],
+    repoLink: "https://github.com/rafaelevan-k/lunar",
+    repoLinks: [
+      { label: "Lunar", href: "https://github.com/rafaelevan-k/lunar" },
+      { label: "Lunar Website", href: "https://github.com/rafaelevan-k/lunar-website" },
+    ],
+    liveLink: "https://lunar-rafaelevank.vercel.app/",
+    isPrivate: false,
     tone: "#D94B35",
   },
   {
@@ -57,9 +79,10 @@ const projects = [
     number: "03",
     role: "Frontend Developer",
     description: "A playful, gamified mathematics learning platform built for elementary students at SD Kanisius Sorowajan.",
-    image: "/project_sinaumatika.webp",
-    tags: ["Vue.js", "Slim", "MySQL"],
+    image: "/project_sinaumatika_home.webp",
+    tags: ["Vue.js", "JavaScript", "CSS"],
     repoLink: "https://github.com/dedenko1/lms-b-fe",
+    liveLink: "https://lms-b-fe.vercel.app/",
     isPrivate: true,
     tone: "#B89A5A",
   },
@@ -82,7 +105,7 @@ const projects = [
     role: "Full-Stack Developer",
     description: "A laptop catalog with separate admin and customer journeys, product management, search, and a practical content workflow.",
     image: "/project_mahalaptop.webp",
-    tags: ["Laravel", "Tailwind CSS", "MySQL"],
+    tags: ["Laravel", "PHP", "MySQL"],
     repoLink: "https://github.com/rafaelevan-k/E-Catalog-Maha-Laptop",
     isPrivate: true,
     tone: "#77584B",
@@ -212,7 +235,9 @@ export default function Home() {
   const tickerX = useTransform(smoothScrollProgress, [0, 1], ["0%", "-35%"]);
   const archiveRotate = useTransform(smoothScrollProgress, [0.55, 0.85], [-35, 70]);
   const selectedProject = projects[selectedProjectIndex];
-  const selectedProjectHref = selectedProject.repoLink ? (selectedProject.isPrivate ? `/private-repo?repo=${encodeURIComponent(selectedProject.repoLink)}` : selectedProject.repoLink) : undefined;
+  const [repoMenuOpen, setRepoMenuOpen] = useState(false);
+  const selectedProjectIsGif = typeof selectedProject.image === "string" && selectedProject.image.endsWith(".gif");
+  const selectedProjectHref = selectedProject.repoLink ?(selectedProject.isPrivate ? `/private-repo?repo=${encodeURIComponent(selectedProject.repoLink)}` : selectedProject.repoLink) : undefined;
 
   useEffect(() => {
     if (prefersReducedMotion || isGameMode) return;
@@ -561,8 +586,14 @@ export default function Home() {
                         layout
                         type="button"
                         key={project.title}
-                        onClick={() => setSelectedProjectIndex(index)}
-                        onFocus={() => setSelectedProjectIndex(index)}
+                        onClick={() => {
+                          setSelectedProjectIndex(index);
+                          setRepoMenuOpen(false);
+                        }}
+                        onFocus={() => {
+                          if (index !== selectedProjectIndex) setRepoMenuOpen(false);
+                          setSelectedProjectIndex(index);
+                        }}
                         aria-pressed={active}
                         whileHover={prefersReducedMotion ? undefined : { x: 8 }}
                         className={`group grid w-full grid-cols-[2.5rem_1fr_auto] items-center gap-2 border-b border-black/20 py-5 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#d94b35] dark:border-white/20 ${active ? "text-[#d94b35]" : "opacity-55 hover:opacity-100"}`}
@@ -594,7 +625,7 @@ export default function Home() {
                         style={prefersReducedMotion ? undefined : { rotateX: previewRotateX, rotateY: previewRotateY }}
                         className="absolute inset-0 overflow-hidden bg-[#181816] shadow-[0_30px_80px_rgba(24,24,22,0.14)] [clip-path:polygon(0_0,94%_0,100%_10%,100%_100%,6%_100%,0_90%)]"
                       >
-                        <Image src={selectedProject.image} alt={selectedProject.title} fill className="object-cover transition-transform duration-700 hover:scale-[1.03]" />
+                        <Image src={selectedProject.image} alt={selectedProject.title} fill unoptimized={selectedProjectIsGif} className="object-cover transition-transform duration-700 hover:scale-[1.03]" />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                         <div className="absolute left-5 top-5 flex items-center gap-2 bg-[#eeeae0] px-3 py-2 font-mono text-[9px] uppercase tracking-[0.18em] text-[#181816]">
                           <span className="h-2 w-2 rounded-full" style={{ backgroundColor: selectedProject.tone }} />
@@ -617,19 +648,82 @@ export default function Home() {
                             </span>
                           ))}
                         </div>
-                        {selectedProjectHref && (
-                          <a
-                            href={selectedProjectHref}
-                            target={selectedProject.isPrivate ? undefined : "_blank"}
-                            rel={selectedProject.isPrivate ? undefined : "noopener noreferrer"}
-                            className="group inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em]"
-                          >
-                            View repository
-                            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#181816] text-[#eeeae0] transition-transform group-hover:-translate-y-1 group-hover:translate-x-1 dark:bg-[#eeeae0] dark:text-[#181816]">
-                              <ArrowUpRight className="h-4 w-4" />
-                            </span>
-                          </a>
-                        )}
+                        <div className="flex flex-col items-start gap-4">
+                          {selectedProject.liveLink && (
+                            <a
+                              href={selectedProject.liveLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="group inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em]"
+                            >
+                              Live
+                              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#d94b35] text-white transition-transform group-hover:-translate-y-1 group-hover:translate-x-1">
+                                <ArrowUpRight className="h-4 w-4" />
+                              </span>
+                            </a>
+                          )}
+                          {selectedProject.repoLinks && selectedProject.repoLinks.length > 1 ? (
+                            <div className="relative">
+                              <button
+                                type="button"
+                                onClick={() => setRepoMenuOpen((open) => !open)}
+                                aria-expanded={repoMenuOpen}
+                                aria-controls="repo-choices"
+                                className="group inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d94b35]"
+                              >
+                                View repository
+                                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#181816] text-[#eeeae0] dark:bg-[#eeeae0] dark:text-[#181816]">
+                                  <motion.span animate={{ rotate: repoMenuOpen ? 90 : 0 }} className="flex">
+                                    <ArrowRight className="h-4 w-4" />
+                                  </motion.span>
+                                </span>
+                              </button>
+                              <AnimatePresence>
+                                {repoMenuOpen && (
+                                  <motion.ul
+                                    id="repo-choices"
+                                    initial={{ opacity: 0, y: -6 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -6 }}
+                                    transition={{ duration: prefersReducedMotion ? 0 : 0.18 }}
+                                    className="mt-3 min-w-48 border-t border-black/20 dark:border-white/20"
+                                  >
+                                    {selectedProject.repoLinks.map((repo) => (
+                                      <li key={repo.href}>
+                                        <a
+                                          href={repo.href}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="group flex items-center justify-between gap-6 border-b border-black/20 py-3 text-sm font-semibold transition-colors hover:text-[#d94b35] dark:border-white/20"
+                                        >
+                                          <span className="flex items-center gap-2">
+                                            <SiGithub className="h-4 w-4" />
+                                            {repo.label}
+                                          </span>
+                                          <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                                        </a>
+                                      </li>
+                                    ))}
+                                  </motion.ul>
+                                )}
+                              </AnimatePresence>
+                            </div>
+                          ) : (
+                            selectedProjectHref && (
+                              <a
+                                href={selectedProjectHref}
+                                target={selectedProject.isPrivate ? undefined : "_blank"}
+                                rel={selectedProject.isPrivate ? undefined : "noopener noreferrer"}
+                                className="group inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em]"
+                              >
+                                View repository
+                                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#181816] text-[#eeeae0] transition-transform group-hover:-translate-y-1 group-hover:translate-x-1 dark:bg-[#eeeae0] dark:text-[#181816]">
+                                  <ArrowUpRight className="h-4 w-4" />
+                                </span>
+                              </a>
+                            )
+                          )}
+                        </div>
                       </div>
                     </div>
                   </motion.article>

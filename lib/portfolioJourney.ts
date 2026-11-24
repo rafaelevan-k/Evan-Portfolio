@@ -3,7 +3,7 @@ export const education = {
   institution: "Universitas Kristen Duta Wacana",
   degree: "Bachelor of Information Systems",
   period: "2023 – present",
-  gpa: "3.64 / 4.00",
+  gpa: "3.67 / 4.00",
 };
 
 export const experiences = [
@@ -18,7 +18,7 @@ export const experiences = [
 
 export const skillCategories = [
   { id: "frontend", title: "Frontend", description: "Responsive interfaces and interactive web experiences.", items: ["JavaScript", "TypeScript", "HTML5", "CSS3", "React", "Next.js", "Vue.js", "Tailwind CSS"] },
-  { id: "backend", title: "Backend & data", description: "Application structure, APIs, and data management.", items: ["PHP", "Laravel", "Node.js", "Slim Framework", "MySQL", "PostgreSQL", "Python", "RESTful APIs"] },
+  { id: "backend", title: "Backend & data", description: "Application structure, APIs, and data management.", items: ["PHP", "Laravel", "Node.js", "C# / .NET (WPF)", "MySQL", "PostgreSQL", "Python", "RESTful APIs"] },
   { id: "tools", title: "Tools & practice", description: "A practical workflow for building and collaborating.", items: ["Git", "GitHub", "VS Code", "Postman", "MVC", "CRUD", "Object-oriented programming", "Team collaboration"] },
 ] as const;
 
