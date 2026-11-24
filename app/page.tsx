@@ -151,10 +151,42 @@ const certifications = [
   },
 ];
 
+const competitions = [
+  {
+    event: "Agentic AI Hackathon 2026",
+    organizer: "Sokrates · with SAP, APP, and AWS",
+    result: "Finalist",
+    detail: "Final Demo Day",
+    track: "Track · Intelligent Supply Chain",
+    date: "31 Oct 2026",
+    project: "SENTRA",
+    description: "An AI agent for supply chain risk. It watches for threats such as geopolitical events and natural disasters, simulates how each one would hit a company's products, and recommends the best recovery option, using SAP data as the core of its calculations.",
+    photo: "/photo_sokrates.jpeg",
+    photoAlt: "Rafael and his Team UKDW teammates in front of the Agentic AI Hackathon 2026 backdrop",
+    certificate: "/documents/Sertifikat Sokrates Agentic AI Hackathon.pdf",
+    mark: "賞",
+  },
+  {
+    event: "BRIN AIDeaNation 2026",
+    organizer: "Badan Riset dan Inovasi Nasional (BRIN)",
+    result: "Finalist",
+    detail: "Jakarta, 11–13 Aug 2026",
+    track: "Theme · AI for Sustainable Future",
+    date: "Aug 2026",
+    project: "PsyAid",
+    description: "An AI decision-support tool that helps psychologists care for disaster survivors, scoring each survivor's condition with the ITQ (International Trauma Questionnaire) during counseling sessions. It sends earthquake alerts so the government can respond faster, and connects to Telegram so BPBD admins get updates without keeping the website open.",
+    photo: "/photo_brin.jpeg",
+    photoAlt: "Rafael presenting with his team to the judges at the BRIN AIDeaNation 2026 booth",
+    certificate: "/documents/Sertifikat BRIN.pdf",
+    mark: "選",
+  },
+];
+
 const navItems = [
   { href: "#about", label: "Profile", jp: "人物" },
   { href: "#projects", label: "Works", jp: "作品" },
   { href: "#certifications", label: "Study", jp: "学習" },
+  { href: "#competitions", label: "Awards", jp: "受賞" },
   { href: "#archive", label: "Archive", jp: "記録" },
   { href: "#contact", label: "Contact", jp: "連絡" },
 ];
@@ -782,6 +814,78 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Competitions */}
+        <section id="competitions" className="relative z-10 px-6 py-28 lg:px-10 lg:py-36">
+          <div className="mx-auto max-w-7xl">
+            <div className="mb-16 flex flex-col justify-between gap-6 md:flex-row md:items-end">
+              <div>
+                <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.3em] text-[#d94b35]">受賞 / Competitions</p>
+                <h2 className="font-display text-5xl font-semibold uppercase tracking-[-0.055em] md:text-7xl">
+                  On the
+                  <br />
+                  finalist stage
+                </h2>
+              </div>
+              <p className="max-w-sm text-sm leading-relaxed opacity-55">Two national AI competitions in 2026, where ideas had to hold up in front of judges and a live audience.</p>
+            </div>
+
+            <div className="grid gap-10 md:grid-cols-2 md:gap-8">
+              {competitions.map((competition, index) => (
+                <motion.article
+                  key={competition.event}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-60px" }}
+                  transition={{ delay: index * 0.1, duration: 0.5 }}
+                  className="group flex flex-col border-t border-black/20 pt-6 dark:border-white/20"
+                >
+                  <div className="relative mb-7 aspect-[3/2] overflow-hidden bg-[#181816] [clip-path:polygon(0_0,92%_0,100%_12%,100%_100%,8%_100%,0_88%)]">
+                    <Image
+                      src={competition.photo}
+                      alt={competition.photoAlt}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 45vw"
+                      className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
+                    <span className="absolute left-4 top-4 bg-[#d94b35] px-3 py-2 font-mono text-[9px] font-semibold uppercase tracking-[0.2em] text-white">
+                      {competition.result}
+                    </span>
+                    <span className="absolute bottom-4 right-6 flex h-12 w-12 rotate-3 items-center justify-center border-2 border-[#eeeae0] font-display text-xl font-semibold text-[#eeeae0] transition-transform duration-500 group-hover:-rotate-6">
+                      {competition.mark}
+                    </span>
+                  </div>
+
+                  <div className="flex items-baseline justify-between gap-4 font-mono text-[9px] uppercase tracking-[0.2em]">
+                    <span className="text-[#d94b35]">{competition.detail}</span>
+                    <span className="opacity-45">{competition.date}</span>
+                  </div>
+                  <h3 className="mt-3 font-display text-3xl font-semibold tracking-tight">{competition.event}</h3>
+                  <p className="mt-2 text-xs font-semibold uppercase tracking-[0.14em] opacity-55">{competition.organizer}</p>
+                  <div className="mt-5 flex-1">
+                    <p className="font-mono text-[9px] uppercase tracking-[0.2em] opacity-45">Our team built</p>
+                    <p className="mt-1 font-display text-xl font-semibold text-[#d94b35]">{competition.project}</p>
+                    <p className="mt-3 max-w-xl text-sm leading-7 opacity-60">{competition.description}</p>
+                  </div>
+
+                  <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-black/15 pt-4 dark:border-white/15">
+                    <span className="font-mono text-[9px] uppercase tracking-[0.16em] opacity-55">{competition.track}</span>
+                    <a
+                      href={competition.certificate}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group/link inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] hover:text-[#d94b35]"
+                    >
+                      View certificate
+                      <ArrowUpRight className="h-4 w-4 transition-transform group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5" />
+                    </a>
+                  </div>
+                </motion.article>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Archive portal */}
         <section id="archive" className="relative z-10 overflow-hidden bg-[#181816] px-6 py-32 text-[#eeeae0] lg:px-10 lg:py-48">
           <div className="absolute inset-0 opacity-[0.06] [background-image:linear-gradient(to_right,#eeeae0_1px,transparent_1px),linear-gradient(to_bottom,#eeeae0_1px,transparent_1px)] [background-size:64px_64px]" />
@@ -798,7 +902,7 @@ export default function Home() {
               <br />
               unknown
             </h2>
-            <p className="mt-10 max-w-xl text-sm leading-7 text-white/50 md:text-base">Step into an interactive 3D room containing my CV, detailed credentials, organizational work, volunteer activities, and awards.</p>
+            <p className="mt-10 max-w-xl text-sm leading-7 text-white/50 md:text-base">Step into an interactive 3D room containing my CV, detailed credentials, organizational work, volunteer activities, and awards, including competition certificates.</p>
             <motion.button
               type="button"
               onClick={() => setIsEnteringArchive(true)}

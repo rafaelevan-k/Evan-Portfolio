@@ -52,6 +52,10 @@ export const archiveBooks: Record<BookCategory, ArchiveBook> = {
     category: "awards",
     color: "#2E8B57",
     separateDocuments: false, // Pack documents side-by-side
-    documents: [{ title: "Pengabdian Masyarakat", path: "/documents/Sertifikat Program Kreativitas Mahasiswa-Pengabdian Masyarakat.pdf" }],
+    documents: [
+      { title: "Finalist · Agentic AI Hackathon 2026", path: "/documents/Sertifikat Sokrates Agentic AI Hackathon.pdf" },
+      { title: "Finalist · BRIN AIDeaNation 2026", path: "/documents/Sertifikat BRIN.pdf" },
+      { title: "Pengabdian Masyarakat", path: "/documents/Sertifikat Program Kreativitas Mahasiswa-Pengabdian Masyarakat.pdf" },
+    ],
   },
 };

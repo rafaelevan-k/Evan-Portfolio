@@ -83,7 +83,7 @@ const archiveGroups = [
   { title: "Curriculum Vitae", detail: "1 document", icon: FileText },
   { title: "Certifications", detail: "3 documents", icon: BookOpen },
   { title: "Volunteer and Organization", detail: "3 documents", icon: Users },
-  { title: "Awards", detail: "1 document", icon: Award },
+  { title: "Awards", detail: "3 documents", icon: Award },
 ] as const;
 
 function getProjectHref(project: GameProject) {
@@ -644,7 +644,7 @@ function ArchiveStation({ station, onEnterArchive }: { station: TrainStation; on
               Four record groups.<br />One deeper room.
             </h3>
             <p className="mt-6 max-w-2xl text-sm leading-7 text-white/70 sm:text-base">
-              The archive contains Rafael&apos;s CV, formal credentials, organization and volunteer records, and an award document. The 3D room loads only when you request it.
+              The archive contains Rafael&apos;s CV, formal credentials, organization and volunteer records, and award certificates, including two 2026 AI competition finals. The 3D room loads only when you request it.
             </p>
           </div>
 
