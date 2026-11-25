@@ -57,7 +57,7 @@ const projects: Project[] = [
       { label: "Lunar", href: "https://github.com/rafaelevan-k/lunar" },
       { label: "Lunar Website", href: "https://github.com/rafaelevan-k/lunar-website" },
     ],
-    liveLink: "https://lunar-rafaelevank.vercel.app/",
+    liveLink: "https://lunar.rafaelevank.tech/",
     isPrivate: false,
     tone: "#D94B35",
   },
