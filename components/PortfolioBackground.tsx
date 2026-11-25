@@ -1,3 +1,4 @@
+import { SkillChip } from "@/components/SkillIcon";
 import { education, experiences, skillCategories } from "@/lib/portfolioJourney";
 
 /** The same background and toolkit as the train, readable without gameplay. */
@@ -17,7 +18,7 @@ export function PortfolioBackground() {
         </div>
         <div id="skills" className="mt-16 scroll-mt-28 border-t border-black/20 pt-8 dark:border-white/20">
           <h2 className="font-display text-2xl font-semibold">The toolkit.</h2>
-          <div className="mt-6 grid gap-8 md:grid-cols-3">{skillCategories.map((category) => <div key={category.id}><h3 className="text-sm font-semibold">{category.title}</h3><p className="mt-2 text-xs leading-6 opacity-65">{category.description}</p><ul className="mt-4 flex list-none flex-wrap gap-2">{category.items.map((item) => <li key={item} className="border border-black/15 px-3 py-2 font-mono text-[10px] dark:border-white/15">{item}</li>)}</ul></div>)}</div>
+          <div className="mt-6 grid gap-8 md:grid-cols-3">{skillCategories.map((category) => <div key={category.id}><h3 className="text-sm font-semibold">{category.title}</h3><p className="mt-2 text-xs leading-6 opacity-65">{category.description}</p><ul className="mt-4 flex list-none flex-wrap gap-2">{category.items.map((item) => <SkillChip key={item} name={item} />)}</ul></div>)}</div>
         </div>
       </div>
     </section>
